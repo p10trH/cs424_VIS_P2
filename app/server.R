@@ -23,10 +23,10 @@ chart4 <- ggplot(hourFrame, aes(x = timesFormat, y = data)) + geom_line(na.rm = 
 # # ---------------------------
 # 
 # statesData <-
-#   read.csv(file = 'statesData.csv',
+#   read.csv(file = 'data/statesData.csv',
 #            header = TRUE)
 # 
-# states <- geojsonio::geojson_read("states.geojson", what = "sp")
+# states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
 # 
 # statesWData <- merge(states, statesData, by = "NAME")
 # 
@@ -69,8 +69,8 @@ chart4 <- ggplot(hourFrame, aes(x = timesFormat, y = data)) + geom_line(na.rm = 
 
 #Data----
 #allOnTimeFlights <- read.csv(file = "2017_ontime_flights.cleaned.csv", header = TRUE)
-load("allFlights12.RData")
-load("allFlights24.RData")
+load("data/allFlights12.RData")
+load("data/allFlights24.RData")
 
 #Format Date & Time:
 #allOnTimeFlights$FL_DATE <- as.Date(allOnTimeFlights$FL_DATE, format = "%m/%d/%Y")
