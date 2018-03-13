@@ -23,10 +23,10 @@ chart4 <- ggplot(hourFrame, aes(x = timesFormat, y = data)) + geom_line(na.rm = 
 # ---------------------------
 
 statesData <-
-  read.csv(file = 'app/statesData.csv',
+  read.csv(file = 'statesData.csv',
            header = TRUE)
 
-states <- geojsonio::geojson_read("app/states.geojson", what = "sp")
+states <- geojsonio::geojson_read("states.geojson", what = "sp")
 
 statesWData <- merge(states, statesData, by = "NAME")
 
@@ -60,7 +60,7 @@ m <- m %>% addPolygons(
   labelOptions = labelOptions(
     style = list("font-weight" = "normal", padding = "3px 8px"),
     textsize = "15px",
-    direction = "auto")) %>% 
+    direction = "auto")) %>%
   addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
                                        position = "bottomright")
 
