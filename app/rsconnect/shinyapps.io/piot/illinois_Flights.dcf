@@ -1,0 +1,12 @@
+name: illinois_Flights
+title: illinois_Flights
+username:
+account: piot
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 298206
+bundleId: 1265411
+url: https://piot.shinyapps.io/illinois_Flights/
+when: 1520901864.17267
+asMultiple: FALSE
+asStatic: FALSE
