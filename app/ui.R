@@ -15,6 +15,11 @@ library(reshape2)
 library(DT)
 library(leaflet)
 
+library(tidyr)
+library(streamgraph)
+library(plotly)
+
+
 # ---------------------------
 
 # Define UI
