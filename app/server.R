@@ -4,6 +4,10 @@
 
 # ---------------------------
 
+
+
+# ---------------------------
+
 # seriesData = data.frame(time = sample(seq(as.Date('2017-1-1'), as.Date('2017-12-31'), by="day"), 900, replace=TRUE), value=runif(900))
 # seriesData = data.frame(time=seq(from=as.POSIXct("2017-1-1", format = '%Y-%m-%d'), to=as.POSIXct("2017-12-31", format = '%Y-%m-%d'), by="day" ), value=runif(365))
 #
@@ -108,6 +112,39 @@ top50Airports <- allFlights24 %>% group_by(ORIGIN_AIRPORT) %>% summarise(Flights
 
 # Define server
 server <- function(input, output) {
+  
+  getDate <- reactive({
+    
+    paste(input$slider_month, input$slider_day, "2017", sep = "-")
+  })
+  
+  output$dynamicSlider <- renderUI({
+    
+    startDate <- as.Date(paste(substr(input$slider_month, 2, 3), '01-2017', sep = "-"), "%m-%d-%Y")
+    
+    choices_day <- format(seq.Date(from = startDate, length.out = as.numeric(days_in_month(startDate)), by="day"), "(%d)  %a")
+  
+    if(!is.null(input$slider_day)){
+      dateToShow <- getDate()
+    }
+    
+    currentDay <- day(mdy(dateToShow))
+    # check out of bounds
+    if (as.numeric(currentDay) > as.numeric(length(choices_day))) {
+      #dateToShow <- gsub(currentDay, as.character(length(choices_day)), dateToShow)
+      dateToShow <- paste(input$slider_month, as.character(length(choices_day)), "2017", sep = "-")
+      
+    }
+    else{}
+
+    sliderTextInput(
+      inputId = "slider_day",
+      label = NULL, width = '100%', grid = TRUE, force_edges = TRUE,
+      choices = choices_day, selected = choices_day[day(mdy(dateToShow))]
+    )
+  })
+  
+  
   # Chicago O\'Hare International
   # Chicago Midway International
   

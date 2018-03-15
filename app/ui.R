@@ -6,6 +6,7 @@ library(shiny)
 library(shinyBS)
 library(shinythemes)
 library(shinydashboard)
+library(shinyWidgets)
 
 library(plyr)
 library(ggplot2)
@@ -19,6 +20,19 @@ library(tidyr)
 library(streamgraph)
 library(plotly)
 
+
+# ---------------------------
+
+# month, day, year ("%m-%d-%Y")
+dateToShow <- "6-9-2017" # don't change
+
+# 2017 only
+choices_month <- format(seq.Date(from = as.Date('1-1-2017', "%m-%d-%Y"), to = as.Date('12-31-2017', "%m-%d-%Y"), by="month"), "(%m)  %b")
+# depends on what date we want to show
+choices_day <- format(seq.Date(from = as.Date(paste(month(mdy(dateToShow)), '1-2017', sep = "-"), "%m-%d-%Y"), length.out = as.numeric(days_in_month(as.Date(dateToShow, "%m-%d-%Y"))), by="day"), "(%d)  %a")
+
+# last day of month
+# format(ceiling_date(as.Date('2-11-2017', "%m-%d-%Y"), "month") - days(1), "%m-%d-%Y")
 
 # ---------------------------
 
@@ -39,9 +53,13 @@ ui <- fluidPage(
     .tabbable > .nav[id=mainNav] > li[class=active] > a   {background-color: #484747; color: white; border: 0px;}
     .tabbable > .nav[id=mainNav] > li > a:hover           {background-color: #484747;}
 
-    .tabbable > .nav[id=secondNav] > li > a               {color: #CFCFCF; border-radius: 4px; border: 4px solid #888888;}
-    .tabbable > .nav[id=secondNav] > li[class=active] > a {background-color: #888888; color: white; border: 4px solid #484747; }
-    .tabbable > .nav[id=secondNav] > li > a:hover         {background-color: #888888; border: 4px solid #484747;}
+    .tabbable > .nav[id=timelineNav] > li > a               {color: #CFCFCF; border-radius: 4px; border: 4px solid #888888;}
+    .tabbable > .nav[id=timelineNav] > li[class=active] > a {background-color: #888888; color: white; border: 4px solid #484747; }
+    .tabbable > .nav[id=timelineNav] > li > a:hover         {background-color: #888888; border: 4px solid #484747;}
+
+    .tabbable > .nav[id=overviewNav] > li > a               {color: #CFCFCF; border-radius: 4px; border: 4px solid #888888;}
+    .tabbable > .nav[id=overviewNav] > li[class=active] > a {background-color: #888888; color: white; border: 4px solid #484747; }
+    .tabbable > .nav[id=overviewNav] > li > a:hover         {background-color: #888888; border: 4px solid #484747;}
 
     .tabbable > .nav > li > a                             {color: #CFCFCF; border-radius: 4px;}
     .tabbable > .nav > li[class=active] > a               {background-color: #484747; color: white;}
@@ -57,11 +75,16 @@ ui <- fluidPage(
   
   tags$style(type='text/css', ".nav-tabs-custom {padding: 20px; margin-bottom: 20px; background-color: #AAAAAA; color: #484747; border-radius: 4px;}"),
   tags$style(type='text/css', "#mainNav {background-color: #666666; border-radius: 4px; border-bottom: 1px solid #666666;}"), # margin: -85px 120px 0px 350px !important;
-  tags$style(type='text/css', "#secondNav {border-radius: 4px; border-bottom: 0px solid #188888; float: left; margin-top: -48px;}"),
+  tags$style(type='text/css', "#timelineNav {border-radius: 4px; border-bottom: 0px solid #188888;}"), #  float: left; margin-top: -48px;
+  tags$style(type='text/css', "#overviewNav {border-radius: 4px; border-bottom: 0px solid #188888;}"), #  float: left; margin-top: -48px;
   
   # Selectize input
   
   tags$style(type='text/css', ".selectize-input {background: #DDDDDD !important;} .selectize-dropdown {}"),
+  
+  # Slider input
+  
+  tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}"),
   
   # Modal windows
   
@@ -74,23 +97,59 @@ ui <- fluidPage(
   
   # App title & buttons  ---------------------------
   
-  fluidRow(column(4, h1("Illinois Flights")), 
+  fluidRow(column(4, h1("Illinois Flights '17")), 
            column(3, offset = 5, align = 'right',
                   actionButton("action_Settings", label = "", icon = icon("cog", "fa-2x")),
                   actionButton("action_About", label = "", icon = icon("info", "fa-2x")))),
   br(),
   
-  # Compare Airports ---------------------------
+  # ---------------------------
   
   tabsetPanel(id = "mainNav",
-              tabPanel("O'Hare vs Midway",
+              
+  # Overview ---------------------------
+              
+              tabPanel("Overview", br(),
+                       tabsetPanel(id = "overviewNav",
+                                   
+  # Dygraphs ---------------------------
+                                   
+                                   tabPanel("Dygraphs", 
+                                            br(), h4("aaaaaaaa")),
+                                   
+  # Heatmaps ---------------------------
+                                   
+                                   tabPanel("Heatmaps", 
+                                            br(), h4("aaaaaaaa"))
+                       )
+              ),
+              
+  # Explore Further ---------------------------
+              
+              tabPanel("Explore Further",
                        br(),
                        fluidRow(column(3, offset = 9, align = 'right',
                                        checkboxInput("checkbox_scale", label = "Common Scale", value = TRUE))),
+                       #fluidRow(column(6, offset = 3, align = 'justify',
+                       #                sliderInput("slider_month", label = NULL, min = 1, max = 12, value = month(mdy(dateToShow)), width='100%'))),
+                       fluidRow(column(6, offset = 3, align = 'justify',
+                                       sliderTextInput(
+                                         inputId = "slider_month", 
+                                         label = NULL, width = '100%', grid = TRUE, force_edges = TRUE,
+                                         choices = choices_month, selected = choices_month[month(mdy(dateToShow))]
+                                       ))),
+                       fluidRow(column(6, offset = 3, align = 'justify',
+                                       uiOutput("dynamicSlider"))),
                        
+                       tabsetPanel(id = "timelineNav",
+                                   
+  # Day ---------------------------
+                                   
+                                   tabPanel("Day", 
+                                            br(), h4("aaaaaaaa")),
+                                   
   # Month ---------------------------
-                       
-                       tabsetPanel(id = "secondNav",
+                                   
                                    tabPanel("Month",
                                             br(),
                                             fluidRow(column(4,  selectInput("select_Month", label = NULL, 
@@ -128,11 +187,10 @@ ui <- fluidPage(
   # Year ---------------------------
   
                                    tabPanel("Year", 
-                                            br(), h4("aaaaaaaa")))),
-              
-  # Single Airport ---------------------------
-              
-              tabPanel("Single Airport", h4("vvvvvvvvv"))),
+                                            br(), h4("aaaaaaaa"))
+                      )
+              )
+  ),
   
   
   
@@ -169,4 +227,21 @@ ui <- fluidPage(
           h6("- plotly", align = "left"))
 
 )
+
+
+
+
+# extra --------
+
+#fluidRow(column(6, offset = 3, align = 'justify',
+#               sliderInput(
+#                 inputId = "slider_day",
+#                 label = NULL, width='100%',
+#                 min = as.Date(paste(month(mdy(dateToShow)), '1', year(mdy(dateToShow)), sep = "-"), "%m-%d-%Y"),
+#                 max = ceiling_date(as.Date(dateToShow, "%m-%d-%Y"), "month") - days(1),
+#                 value = as.Date(dateToShow, "%m-%d-%Y"),
+#                 timeFormat = "(%d)  %a"
+#                 
+#                 
+#                 ))),
 
