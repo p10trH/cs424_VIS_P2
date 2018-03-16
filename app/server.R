@@ -37,52 +37,80 @@ chart4 <- ggplot(hourFrame, aes(x = timesFormat, y = data)) + geom_line(na.rm = 
 
 # ---------------------------
 
-statesData <-
-  read.csv(file = 'data/statesData.csv',
-           header = TRUE)
-
-states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
-
-statesWData <- merge(states, statesData, by = "NAME")
-
-# try CartoDB.Positron
-m <- leaflet(statesWData) %>%
-  setView(-96, 37.8, 4) %>%
-  addProviderTiles(providers$Stamen.TonerLite,
-                   options = providerTileOptions(noWrap = TRUE))
-
-bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
-
-labels <- sprintf(
-  "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-  statesWData$NAME, statesWData$value
-) %>% lapply(htmltools::HTML)
-
-m <- m %>% addPolygons(
-  fillColor = ~pal(statesWData$value),
-  weight = 2,
-  opacity = 1,
-  color = "black",
-  dashArray = "3",
-  fillOpacity = 0.7,
-  highlight = highlightOptions(
-    weight = 5,
-    color = "#666",
-    dashArray = "",
-    fillOpacity = 0.7,
-    bringToFront = TRUE),
-  label = labels,
-  labelOptions = labelOptions(
-    style = list("font-weight" = "normal", padding = "3px 8px"),
-    textsize = "15px",
-    direction = "auto")) %>%
-  addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
-                                       position = "bottomright")
+# statesData <-
+#   read.csv(file = 'data/statesData.csv',
+#            header = TRUE)
+# 
+# states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
+# 
+# statesWData <- merge(states, statesData, by = "NAME")
+# 
+# # try CartoDB.Positron
+# m <- leaflet(statesWData) %>%
+#   setView(-96, 37.8, 4) %>%
+#   addProviderTiles(providers$Stamen.TonerLite,
+#                    options = providerTileOptions(noWrap = TRUE))
+# 
+# bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+# pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+# 
+# labels <- sprintf(
+#   "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+#   statesWData$NAME, statesWData$value
+# ) %>% lapply(htmltools::HTML)
+# 
+# m <- m %>% addPolygons(
+#   fillColor = ~pal(statesWData$value),
+#   weight = 2,
+#   opacity = 1,
+#   color = "black",
+#   dashArray = "3",
+#   fillOpacity = 0.7,
+#   highlight = highlightOptions(
+#     weight = 5,
+#     color = "#666",
+#     dashArray = "",
+#     fillOpacity = 0.7,
+#     bringToFront = TRUE),
+#   label = labels,
+#   labelOptions = labelOptions(
+#     style = list("font-weight" = "normal", padding = "3px 8px"),
+#     textsize = "15px",
+#     direction = "auto")) %>%
+#   leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+#                                        position = "bottomright")
 
 # ---------------------------
 
+# Overview. Dygraph, total flights + delays
 
+allFlightsCondensed <- data.frame(allFlights24$FL_DATE, allFlights24$ORIGIN_AIRPORT, allFlights24$DEST_AIRPORT)
+colnames (allFlightsCondensed) <- c("FL_DATE", "ORIGIN_AIRPORT", "DEST_AIRPORT")
+
+# ohare
+allFlightsOHare <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago O'Hare International" | DEST_AIRPORT == "Chicago O'Hare International")
+allFlightsOHare <- allFlightsOHare %>% add_count(FL_DATE)
+#allFlightsOHare <- distinct(allFlightsOHare, FL_DATE)
+allFlightsOHare <- allFlightsOHare[!duplicated(allFlightsOHare$FL_DATE), ]
+
+series1 = xts(x = allFlightsOHare$n, order.by = allFlightsOHare$FL_DATE)
+
+# midway
+allFlightsMidway <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago Midway International" | DEST_AIRPORT == "Chicago Midway International")
+allFlightsMidway <- allFlightsMidway %>% add_count(FL_DATE)
+allFlightsMidway <- allFlightsMidway[!duplicated(allFlightsMidway$FL_DATE), ]
+
+series2 = xts(x = allFlightsMidway$n, order.by = allFlightsMidway$FL_DATE)
+
+#series1 <- data.frame(FL_DATE = allFlightsOHare$FL_DATE, OHARE = allFlightsOHare$n, MIDWAY = allFlightsMidway$n)
+#series1 = xts(x1 = series1$OHARE, x2 = series1$MIDWAY, order.by = series1$FL_DATE)
+
+allData <- cbind(series1, series2)
+colnames (allData) <- c("O\'Hare", "Midway")
+#dygraph(allData) %>% dyRangeSelector()
+
+
+# ---------------------------
 #Data----
 #allOnTimeFlights <- read.csv(file = "2017_ontime_flights.cleaned.csv", header = TRUE)
 load("data/allFlights12.RData")
@@ -113,6 +141,8 @@ top50Airports <- allFlights24 %>% group_by(ORIGIN_AIRPORT) %>% summarise(Flights
 # Define server
 server <- function(input, output) {
   
+  #output$value <- renderPrint({ getDate()})
+  
   getDate <- reactive({
     
     # check if valid date first, otherwise set to last day of current month
@@ -138,7 +168,7 @@ server <- function(input, output) {
 
     sliderTextInput(
       inputId = "slider_day",
-      label = NULL, width = '100%', grid = TRUE, force_edges = TRUE,
+      label = NULL, width = '100%', grid = TRUE, force_edges = TRUE, hide_min_max = TRUE,
       choices = choices_day, selected = choices_day[day(mdy(dateToShow))]
     )
   })

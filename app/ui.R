@@ -2,34 +2,7 @@
 # Dimitar Kirilov
 # Tarush Vig
 
-library(shiny)
-library(shinyBS)
-library(shinythemes)
-library(shinydashboard)
-library(shinyWidgets)
-
-library(plyr)
-library(ggplot2)
-library(lubridate)
-library(dplyr)
-library(reshape2)
-library(DT)
-library(leaflet)
-
-library(tidyr)
-library(streamgraph)
-library(plotly)
-
-
 # ---------------------------
-
-# month, day, year ("%m-%d-%Y")
-dateToShow <- "6-9-2017" # don't change
-
-# 2017 only
-choices_month <- format(seq.Date(from = as.Date('1-1-2017', "%m-%d-%Y"), to = as.Date('12-31-2017', "%m-%d-%Y"), by="month"), "(%m)  %b")
-# depends on what date we want to show
-choices_day <- format(seq.Date(from = as.Date(paste(month(mdy(dateToShow)), '1-2017', sep = "-"), "%m-%d-%Y"), length.out = as.numeric(days_in_month(as.Date(dateToShow, "%m-%d-%Y"))), by="day"), "(%d)  %a")
 
 # ---------------------------
 
@@ -81,7 +54,15 @@ ui <- fluidPage(
   
   # Slider input
   
-  tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}"),
+  tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}
+                                 .irs-grid-pol {height: 15px; width: 5px; top: 17px; background: #666666;}"),
+  tags$style(type = "text/css", ".irs-grid-text {font-size: 15px; color: white; z-index: 0; bottom: -20px;}
+                                 .irs-single {font-size: 18px; color: white; background: #484747; top: 63px; z-index:1; padding-left: 5px; padding-right: 5px;}
+                                 .irs-slider {background: #666666; width: 30px; height: 45px; top: 15px; border-radius: 4px;}
+                                 .irs-slider:hover {background: #666666; width: 30px; height: 45px; top: 15px; border-radius: 4px;}
+                                 .irs-bar {width: 100%; height: 25px; background: #CFCFCF; border-top: 1px solid #CFCFCF; border-bottom: 1px solid #CFCFCF;}
+                                 .irs-bar-edge {background: #CFCFCF; border: 1px solid #CFCFCF; height: 25px; border-radius: 4px; width: 20px;}
+                                 .irs-line {background: #CFCFCF; border: 1px solid #CFCFCF; height: 25px; border-radius: 4px;}"),
   
   # Modal windows
   
@@ -129,13 +110,14 @@ ui <- fluidPage(
                                        checkboxInput("checkbox_scale", label = "Common Scale", value = TRUE))),
                        #fluidRow(column(6, offset = 3, align = 'justify',
                        #                sliderInput("slider_month", label = NULL, min = 1, max = 12, value = month(mdy(dateToShow)), width='100%'))),
-                       fluidRow(column(6, offset = 3, align = 'justify',
+                       fluidRow(column(8, offset = 2, align = 'justify',
                                        sliderTextInput(
                                          inputId = "slider_month", 
-                                         label = NULL, width = '100%', grid = TRUE, force_edges = TRUE,
+                                         label = NULL, width = '100%', grid = TRUE, force_edges = TRUE, hide_min_max = TRUE,
                                          choices = choices_month, selected = choices_month[month(mdy(dateToShow))]
                                        ))),
-                       fluidRow(column(6, offset = 3, align = 'justify',
+                       br(),
+                       fluidRow(column(8, offset = 2, align = 'justify',
                                        uiOutput("dynamicSlider"))),
                        
                        tabsetPanel(id = "timelineNav",
@@ -149,9 +131,6 @@ ui <- fluidPage(
                                    
                                    tabPanel("Month",
                                             br(),
-                                            fluidRow(column(4,  selectInput("select_Month", label = NULL, 
-                                                                            choices = list("01 - January" = 1, "02 - February" = 2, "03 - March" = 3, "04 - April" = 4, "05 - May" = 5, "06 - June" = 6, "07 - July" = 7, "08 - August" = 8, "09 - September" = 9, "10 - October" = 10, "11 - November" = 11, "12 - December" = 12), 
-                                                                            selected = 1))),
                                             fluidRow(
                                               tabBox(
                                                 title = "Flights for Each Hour of the Day",
@@ -269,6 +248,11 @@ ui <- fluidPage(
 #  column(4, verbatimTextOutput("value"))),
 
 # ----
+
+# fluidRow(column(4,  selectInput("select_Month", label = NULL, 
+#                                 choices = list("01 - January" = 1, "02 - February" = 2, "03 - March" = 3, "04 - April" = 4, "05 - May" = 5, "06 - June" = 6, "07 - July" = 7, "08 - August" = 8, "09 - September" = 9, "10 - October" = 10, "11 - November" = 11, "12 - December" = 12), 
+#                                 selected = 1))),
+
 # ----
 # ----
 # ----
