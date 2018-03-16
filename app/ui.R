@@ -93,12 +93,93 @@ ui <- fluidPage(
   # Dygraphs ---------------------------
                                    
                                    tabPanel("Dygraphs", 
-                                            br(), h4("aaaaaaaa")),
+                                            br(), 
+                        
+                                            fluidRow(
+                                              tabBox(
+                                                title = "original dygraph + A6",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp49")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp50"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp51")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp52"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a1",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp53")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp54"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp55")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp56"))
+                                                         )))
+                                            )
+                                            
+                                            
+                                            ),
                                    
   # Heatmaps ---------------------------
                                    
                                    tabPanel("Heatmaps", 
-                                            br(), h4("aaaaaaaa"))
+                                            br(), 
+                                            
+                                        
+                                            fluidRow(
+                                              tabBox(
+                                                title = "heatmaps",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp21")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp22"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp23")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp24"))
+                                                         )))
+                                            )
+                                            
+                                            
+                                            )
                        )
               ),
               
@@ -125,7 +206,108 @@ ui <- fluidPage(
   # Day ---------------------------
                                    
                                    tabPanel("Day", 
-                                            br(), h4("aaaaaaaa")),
+                                            br(),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a2",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp1")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp2"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp3")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp4"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a3",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp5")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp6"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp7")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp8"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a5",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp9a")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp10b"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp11")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp12"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a7 + G1 + G2",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp9b")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp10a"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp11c")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp12d"))
+                                                         )))
+                                            )
+                                            
+                                            
+                                            
+                                            
+                                            ),
                                    
   # Month ---------------------------
                                    
@@ -133,7 +315,7 @@ ui <- fluidPage(
                                             br(),
                                             fluidRow(
                                               tabBox(
-                                                title = "Flights for Each Hour of the Day",
+                                                title = "c1",
                                                 side = "left",
                                                 width = 12,
                                                 tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -149,10 +331,106 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("hourlyArrDep")),
+                                                                  plotOutput("OhareAirlineArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("hourlyArrDep2"))
+                                                                  plotOutput("MidwayAirlineArrDep"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "c2 + c4",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("hourlyArrDepTable1")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("hourlyArrDep2Table1"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("OhareHourlyArrDep")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("OhareHourlyArrDep1"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "c3",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp13")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp14"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp15")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp16"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "c5",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp17")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp18"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp19")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp20"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a7 + G1 + G2",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp21a")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp22s"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp23c")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp24m"))
                                                          )))
                                             )
                                             
@@ -163,7 +441,157 @@ ui <- fluidPage(
   # Year ---------------------------
   
                                    tabPanel("Year", 
-                                            br(), h4("aaaaaaaa"))
+                                            br(), 
+
+                                            fluidRow(
+                                              tabBox(
+                                                title = "b1 (a2 is the same info)",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp25")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp26"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp27")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp28"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "b2",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp29")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp30"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp31")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp32"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a4",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp33")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp34"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp35")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp36"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "b3",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp37")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp38"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp39")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp40"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "b4 (a5 is the same info)",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp41")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp42"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp43")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp44"))
+                                                         )))
+                                            ),
+                                            fluidRow(
+                                              tabBox(
+                                                title = "a7 + G1 + G2",
+                                                side = "left",
+                                                width = 12,
+                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp45")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  DTOutput("tmp46"))
+                                                         )),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp47")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotOutput("tmp48"))
+                                                         )))
+                                            )
+                                            
+                                            
+                                            
+                                            
+                                            )
                       )
               )
   ),
@@ -176,7 +604,7 @@ ui <- fluidPage(
   
   bsModal(id = "modal_Settings", "Settings", trigger = "action_Settings", size = "small",
           h3("Time"), 
-          fluidRow(column(6, offset = 1, checkboxInput("checkbox_24h", label = "24h format", value = FALSE)))),
+          fluidRow(column(6, offset = 1, checkboxInput("HourFormat", label = "24h format", value = FALSE)))),
   bsModal(id = "modal_About", "About", trigger = "action_About", size = "large",
           #h4("By Peter Hanula, Dimitar Kirilov, Tarush Vig"),
           h3("Project 2 - CS 424", align = "center"),
