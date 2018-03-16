@@ -115,7 +115,14 @@ server <- function(input, output) {
   
   getDate <- reactive({
     
-    paste(input$slider_month, input$slider_day, "2017", sep = "-")
+    # check if valid date first, otherwise set to last day of current month
+    if (is.na(day(mdy(paste(substr(input$slider_month, 2, 3), substr(input$slider_day, 2, 3), "2017", sep = "-"))))) {
+       tempMonthYear <- paste(substr(input$slider_month, 2, 3), "2017", sep = "-")
+       tempDays <- as.numeric(days_in_month(as.yearmon(tempMonthYear, "%m-%Y")))
+       paste(substr(input$slider_month, 2, 3), as.character(tempDays), "2017", sep = "-")
+    } else{
+       paste(substr(input$slider_month, 2, 3), substr(input$slider_day, 2, 3), "2017", sep = "-")
+    }
   })
   
   output$dynamicSlider <- renderUI({
@@ -124,18 +131,10 @@ server <- function(input, output) {
     
     choices_day <- format(seq.Date(from = startDate, length.out = as.numeric(days_in_month(startDate)), by="day"), "(%d)  %a")
   
-    if(!is.null(input$slider_day)){
+    if(!is.null(input$slider_day)) {
+      
       dateToShow <- getDate()
     }
-    
-    currentDay <- day(mdy(dateToShow))
-    # check out of bounds
-    if (as.numeric(currentDay) > as.numeric(length(choices_day))) {
-      #dateToShow <- gsub(currentDay, as.character(length(choices_day)), dateToShow)
-      dateToShow <- paste(input$slider_month, as.character(length(choices_day)), "2017", sep = "-")
-      
-    }
-    else{}
 
     sliderTextInput(
       inputId = "slider_day",

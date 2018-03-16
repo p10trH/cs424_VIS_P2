@@ -31,9 +31,6 @@ choices_month <- format(seq.Date(from = as.Date('1-1-2017', "%m-%d-%Y"), to = as
 # depends on what date we want to show
 choices_day <- format(seq.Date(from = as.Date(paste(month(mdy(dateToShow)), '1-2017', sep = "-"), "%m-%d-%Y"), length.out = as.numeric(days_in_month(as.Date(dateToShow, "%m-%d-%Y"))), by="day"), "(%d)  %a")
 
-# last day of month
-# format(ceiling_date(as.Date('2-11-2017', "%m-%d-%Y"), "month") - days(1), "%m-%d-%Y")
-
 # ---------------------------
 
 # Define UI
@@ -244,4 +241,36 @@ ui <- fluidPage(
 #                 
 #                 
 #                 ))),
+
+# ----
+
+# check out of bounds
+#if (is.na(day(mdy(dateToShow)))) {
+#  dateToShow <- paste(substr(input$slider_month, 2, 3), as.character(length(choices_day)), "2017", sep = "-")
+#  
+#}
+
+#if (as.numeric(currentDay) > length(choices_day)) {
+#  dateToShow <- gsub(currentDay, as.character(length(choices_day)), dateToShow)
+#  #dateToShow <- paste(substr(input$slider_month, 2, 3), as.character(length(choices_day)), "2017", sep = "-")
+#}
+
+# last day of month
+# format(ceiling_date(as.Date('2-11-2017', "%m-%d-%Y"), "month") - days(1), "%m-%d-%Y")
+
+#tempDate <- paste(substr(input$slider_month, 2, 3), substr(input$slider_day, 2, 3), "2017", sep = "-")
+
+
+# ----
+
+# output$value <- renderPrint({ getDate()})
+
+#fluidRow(
+#  column(4, verbatimTextOutput("value"))),
+
+# ----
+# ----
+# ----
+# ----
+
 
