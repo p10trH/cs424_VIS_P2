@@ -374,7 +374,7 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("OhareAirlineArrDep")),
+                                                                  plotlyOutput("OhareAirlineArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
                                                                   plotOutput("MidwayAirlineArrDep"))
