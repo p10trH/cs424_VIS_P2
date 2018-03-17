@@ -184,11 +184,13 @@ server <- function(input, output) {
   oneMonthReactive <- reactive({
     if (input$HourFormat)
     {
-      filter(allFlights24, month(FL_DATE) == input$Month)
+      curMonth <- month(mdy(getDate()))
+      filter(allFlights24, month(FL_DATE) == curMonth)
     }
     else
     {
-      filter(allFlights12, month(FL_DATE) == input$Month)
+      curMonth <- month(mdy(getDate()))
+      filter(allFlights12, month(FL_DATE) == curMonth)
     }
     
   })
@@ -205,22 +207,25 @@ server <- function(input, output) {
   oneDayReactive <- reactive({
     if (input$HourFormat)
     {
-      message(input$Date)
-      filter(allFlights24, date(FL_DATE) == input$Date)
+      curDate <- mdy(getDate())
+      filter(allFlights24, date(FL_DATE) == curDate)
     }
     else
     {
-      filter(allFlights12, date(FL_DATE) == input$Date)
+      curDate <- mdy(getDate())
+      filter(allFlights12, date(FL_DATE) == curDate)
     }
   })
   oneWeekdayReactive <- reactive({
     if (input$HourFormat)
     {
-      filter(allFlights24, weekdays(FL_DATE) == input$Weekday)
+      curWeekday <- weekdays(mdy(getDate()))
+      filter(allFlights24, weekdays(FL_DATE) == curWeekday)
     }
     else
     {
-      filter(allFlights12, weekdays(FL_DATE) == input$Weekday)
+      curWeekday <- weekdays(mdy(getDate()))
+      filter(allFlights12, weekdays(FL_DATE) == curWeekday)
     }
   })
   oneAirlineReactive <- reactive({
@@ -234,133 +239,2566 @@ server <- function(input, output) {
     }
   })
   
-  # C====
-  # Total # of Departures & Arrivals (Airlines)
-  output$OhareAirlineArrDep <- renderPlot({
-    
-    monthNum <- month(mdy(getDate()))
-    #oneMonth <- 6
-    #message(oneMonth)
-    
-    oneMonth <- filter(allOnTimeFlights, month(FL_DATE) == monthNum)
-    # Select Proper Month:
-    #oneMonth <- oneMonthReactive()
-    
-    # Filter Arrivals and Departures:
-    arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
-      group_by(CARRIER_NAME) %>%
-      summarise(freq = n())
-    
-    departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
-      group_by(CARRIER_NAME) %>%
-      summarise(freq = n())
-    
-    colnames(arrivals) <- c("Airline", "Arrivals")
-    colnames(departures) <- c("Airline", "Departures")
-    
-    # Combine and Melt:
-    airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
-    airlineArrDep[is.na(airlineArrDep)] = 0
-    
-    airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
-    
-    # Plot
-    ggplot(data = airlineArrDepMelt, aes(x = Airline,
-                                         y = value,
-                                         fill = variable)) +
-      labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", color = "Legend") +
-      geom_bar(stat = "identity", position = "dodge") +
-      scale_fill_brewer(palette = "Set1")
-  })
+  #Plots----
   
+    # C====
+    # C1: Total # of Departures & Arrivals (Airlines)
+    output$OhareAirlineArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      colnames(arrivals) <- c("Airline", "Arrivals")
+      colnames(departures) <- c("Airline", "Departures")
+      
+      # Combine and Melt:
+      airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
+      airlineArrDep[is.na(airlineArrDep)] = 0
+      
+      airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
+      
+      # Table
+      #output$OhareAirlineArrDepTable <- renderDT({datatable(airlineArrDep)})
+      
+      # Plot
+      ggplot(data = airlineArrDepMelt, aes(x = Airline,
+                                           y = value,
+                                           fill = variable)) +
+        labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", color = "Legend") +
+        geom_bar(stat = "identity", position = "dodge") +
+        scale_fill_brewer(palette = "Set1")
+    })
+    
+    output$MidwayAirlineArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      colnames(arrivals) <- c("Airline", "Arrivals")
+      colnames(departures) <- c("Airline", "Departures")
+      
+      # Combine and Melt:
+      airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
+      airlineArrDep[is.na(airlineArrDep)] = 0
+      
+      airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
+      
+      # Table
+      #output$MidwayAirlineArrDepTable <- renderDT({datatable(airlineArrDep)})
+      
+      # Plot
+      ggplot(data = airlineArrDepMelt, aes(x = Airline,
+                                           y = value,
+                                           fill = variable)) +
+        labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", color = "Legend") +
+        geom_bar(stat = "identity", position = "dodge") +
+        scale_fill_brewer(palette = "Set1")
+    })
+    
+    
+    # C2: Total # of Departures & Arrivals (Hourly)
+    output$OhareHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        #oneMonth <- filter(allFlights24, month(FL_DATE) == monthNum)
+      }
+      else
+      {
+        hourFormat <- hours12
+        #oneMonth <- filter(allFlights12, month(FL_DATE) == monthNum)
+      }
+      
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Table
+      #output$OhareHourlyArrDepTable <- renderDT({datatable(hourlyArrDep)})
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$MidwayHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Table
+      #output$MidwayHourlyArrDepTable <- renderDT({datatable(hourlyArrDep)})
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    
+    # C3: Total # of Departures & Arrivals (Weekly)
+    output$OhareWeeklyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Day", "Arrivals")
+      colnames(departures) <- c("Day", "Departures")
+      
+      # Combine and Melt:
+      weeklyArrDep <- join_all(list(arrivals, departures), by = "Day", type = "full")
+      weeklyArrDep[is.na(weeklyArrDep)] = 0
+      
+      weeklyArrDep$Day <- ordered(weeklyArrDep$Day, levels = weekdays[,])
+      
+      hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
+      
+      # Table
+      #output$OhareWeeklyArrDepTable <- renderDT({datatable(weeklyArrDep)})
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Day,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$MidwayWeeklyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Day", "Arrivals")
+      colnames(departures) <- c("Day", "Departures")
+      
+      # Combine and Melt:
+      weeklyArrDep <- join_all(list(arrivals, departures), by = "Day", type = "full")
+      weeklyArrDep[is.na(weeklyArrDep)] = 0
+      
+      weeklyArrDep$Day <- ordered(weeklyArrDep$Day, levels = weekdays[,])
+      
+      hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
+      
+      # Table
+      #output$MidwayWeeklyArrDepTable <- renderDT({datatable(weeklyArrDep)})
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Day,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    
+    # C4: Total # of Delays (Hourly)
+    output$OhareHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      # Table
+      #output$OhareHourlyDelaysTable <- renderDT({datatable(delays)})
+      
+      # Plot
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$MidwayHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      # Table
+      #output$MidwayHourlyDelaysTable <- renderDT({datatable(delays)})
+      
+      # Plot
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    
+    # C5: Total # of Flights (Top 15 Arrival/Destination Airports)
+    output$OhareMostCommonArrivalAirports <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      arrivalAirports <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ORIGIN_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(arrivalAirports) <- c("Airport", "Flights")
+      
+      # Table
+      #output$OhareMostCommonArrivalAirportsTable <- renderDT({datatable(arrivalAirports)})
+      
+      # Plot
+      ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
+                                         y = Flights)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_bar(stat = "identity", fill = "red") + 
+        guides(fill = FALSE) +
+        coord_flip()
+    })
+    
+    output$OhareMostCommonDestinationAirports <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      destinationAirports <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(destinationAirports) <- c("Airport", "Flights")
+      
+      # Table
+      #output$OhareMostCommonDestinationAirportsTable <- renderDT({datatable(destinationAirports)})
+      
+      # Plot
+      ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
+                                             y = Flights)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_bar(stat = "identity", fill = "blue") + 
+        guides(fill = FALSE) +
+        coord_flip()
+    })
+    
+    output$MidwayMostCommonArrivalAirports <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      arrivalAirports <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ORIGIN_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(arrivalAirports) <- c("Airport", "Flights")
+      
+      # Table
+      #output$MidwayMostCommonArrivalAirportsTable <- renderDT({datatable(arrivalAirports)})
+      
+      # Plot
+      ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
+                                         y = Flights)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_bar(stat = "identity", fill = "red") + 
+        guides(fill = FALSE) +
+        coord_flip()
+    })
+    
+    output$MidwayMostCommonDestinationAirports <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      destinationAirports <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(destinationAirports) <- c("Airport", "Flights")
+      
+      # Table
+      #output$MidwayMostCommonDestinationAirportsTable <- renderDT({datatable(destinationAirports)})
+      
+      # Plot
+      ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
+                                             y = Flights)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_bar(stat = "identity", fill = "blue") + 
+        guides(fill = FALSE) +
+        coord_flip()
+    })
+    
+    
+    
+    
+    
+    # B====
+    
+    # B1: Total # Departures/Arrivals per Airline (MOnthly)
+    output$Ohare1YearAirlinesArrivals <- renderPlot({
+      
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
+      arrivals[is.na(arrivals)] = 0
+      
+      arrivalsMelt <- melt(arrivals)
+      
+      ggplot(data = arrivalsMelt, aes(x = variable,
+                                      y = Airline)) +
+        geom_tile(aes(fill = arrivalsMelt$value)) +
+        scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
+        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Ohare1YearAirlinesDepartures <- renderPlot({
+      
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
+      departures[is.na(departures)] = 0
+      
+      departuresMelt <- melt(departures)
+      
+      ggplot(data = departuresMelt, aes(x = variable,
+                                        y = Airline)) +
+        geom_tile(aes(fill = departuresMelt$value)) +
+        scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearAirlinesArrivals <- renderPlot({
+      
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
+      arrivals[is.na(arrivals)] = 0
+      
+      arrivalsMelt <- melt(arrivals)
+      
+      ggplot(data = arrivalsMelt, aes(x = variable,
+                                      y = Airline)) +
+        geom_tile(aes(fill = arrivalsMelt$value)) +
+        scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
+        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearAirlinesDepartures <- renderPlot({
+      
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
+      departures[is.na(departures)] = 0
+      
+      departuresMelt <- melt(departures)
+      
+      ggplot(data = departuresMelt, aes(x = variable,
+                                        y = Airline)) +
+        geom_tile(aes(fill = departuresMelt$value)) +
+        scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    
+    # B2: Total # Departures/Arrivals (Hourly + Monthly)
+    output$Ohare1YearHourlyArrivals <- renderPlot({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      allArrivalsMelt <- melt(allArrivals)
+      
+      ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME)) +
+        geom_tile(aes(fill = allArrivalsMelt$value)) +
+        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Ohare1YearHourlyDepartures <- renderPlot({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      allDeparturesMelt <- melt(allDepartures)
+      
+      ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME)) +
+        geom_tile(aes(fill = allDeparturesMelt$value)) +
+        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearHourlyArrivals <- renderPlot({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      allArrivalsMelt <- melt(allArrivals)
+      
+      ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME)) +
+        geom_tile(aes(fill = allArrivalsMelt$value)) +
+        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearHourlyDepartures <- renderPlot({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      allDeparturesMelt <- melt(allDepartures)
+      
+      ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME)) +
+        geom_tile(aes(fill = allDeparturesMelt$value)) +
+        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    
+    # B3: Total # Flights for Top 15 Destinations (Monthly)
+    output$Ohare1YearlMostCommon <- renderPlot({
+      
+      topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
+        group_by(DEST_AIRPORT, month(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq))
+      
+      colnames(destinationAirports) <- c("Airport", "Month", "Flights")
+      
+      ggplot(data = destinationAirports, aes(x = Month, 
+                                             y = Flights,
+                                             group = Airport,
+                                             color = Airport)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Midway1YearlMostCommon <- renderPlot({
+      
+      topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
+        group_by(DEST_AIRPORT, month(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq))
+      
+      colnames(destinationAirports) <- c("Airport", "Month", "Flights")
+      
+      ggplot(data = destinationAirports, aes(x = Month, 
+                                             y = Flights,
+                                             group = Airport,
+                                             color = Airport)) + 
+        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    
+    # B4: Total # Delays (Monthly)
+    output$Ohare1YearDelays <- renderStreamgraph({
+      
+      # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+      #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+      #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+      #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+      #   group_by(month(FL_DATE)) %>%
+      #   summarise_each(funs(sum)) %>%
+      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      # 
+      # delays$FL_DATE <- NULL
+      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      # 
+      # delaysMelt <- melt(delays, id.vars = "Month")
+      # 
+      # ggplot(data = delaysMelt, aes(x = Month,
+      #                               y = value,
+      #                               group = variable,
+      #                               color = variable)) +
+      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+      #   geom_point() +
+      #   geom_line(size = 1.5, alpha = 0.7)
+      
+      # OR
+      
+      delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+        group_by(month(FL_DATE)) %>%
+        summarise_each(funs(sum))
+      
+      delays$FL_DATE <- NULL
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+      
+      delaysMelt <- melt(delays, id.vars = "Month")
+      
+      delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+      
+      streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
+        sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
+        sg_legend(show = TRUE, label = "variable")
+    })
+    
+    output$Midway1YearDelays <- renderStreamgraph({
+      
+      # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+      #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+      #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+      #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+      #   group_by(month(FL_DATE)) %>%
+      #   summarise_each(funs(sum)) %>%
+      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      # 
+      # delays$FL_DATE <- NULL
+      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      # 
+      # delaysMelt <- melt(delays, id.vars = "Month")
+      # 
+      # ggplot(data = delaysMelt, aes(x = Month,
+      #                               y = value,
+      #                               group = variable,
+      #                               color = variable)) +
+      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+      #   geom_point() +
+      #   geom_line(size = 1.5, alpha = 0.7)
+      
+      # OR
+      
+      delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+        group_by(month(FL_DATE)) %>%
+        summarise_each(funs(sum))
+      
+      delays$FL_DATE <- NULL
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+      
+      delaysMelt <- melt(delays, id.vars = "Month")
+      
+      delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+      
+      streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
+        sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
+        sg_legend(show = TRUE, label = "variable")
+    })
+    
+    
+    # A====
+    
+    # A1: TARUSH VIG!?!?!
+    
+    
+    # A2: 1 Day Departures/Arrivals per Airline (Monthly)
+    output$Ohare1YearAirlineHourlyArrivals <- renderPlot({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      allArrivalsMelt <- melt(allArrivals)
+      
+      ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME)) +
+        geom_tile(aes(fill = allArrivalsMelt$value)) +
+        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Ohare1YearAirlineHourlyDepartures <- renderPlot({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      allDeparturesMelt <- melt(allDepartures)
+      
+      ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME)) +
+        geom_tile(aes(fill = allDeparturesMelt$value)) +
+        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearAirlineHourlyArrivals <- renderPlot({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      allArrivalsMelt <- melt(allArrivals)
+      
+      ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME)) +
+        geom_tile(aes(fill = allArrivalsMelt$value)) +
+        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    output$Midway1YearAirlineHourlyDepartures <- renderPlot({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      allDeparturesMelt <- melt(allDepartures)
+      
+      ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME)) +
+        geom_tile(aes(fill = allDeparturesMelt$value)) +
+        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+    })
+    
+    
+    # A3: 1 Day Departures/Arrivals (Hourly) + Delays?
+    output$Ohare1DayHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Ohare1DayHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Midway1DayHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Midway1DayHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    
+    # A4: 1 Weekday Departures/Arrivals (Hourly) + Delays?
+    output$Ohare1WeekdayHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Ohare1WeekdayHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Midway1WeekdayHourlyArrDep <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Plot
+      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+                                          y = value,
+                                          group = variable,
+                                          color = variable)) +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7)
+    })
+    
+    output$Midway1WeekdayHourlyDelays <- renderPlot({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      ggplot(data = delaysMelt, aes(x = Hour, 
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) + 
+        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() + 
+        geom_line(size = 1.5, alpha = 0.7)
+    })
   
-  output$MidwayAirlineArrDep <- renderPlot({
-    # Select Proper Month:
-    #oneMonth <- oneMonthReactive()
-    monthNum <- month(mdy(getDate()))
-    oneMonth <- filter(allOnTimeFlights, month(FL_DATE) == monthNum)
     
-    # Filter Arrivals and Departures:
-    arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
-      group_by(CARRIER_NAME) %>%
-      summarise(freq = n())
+  #Tables----
+    # C====
+    # C1: Total # of Departures & Arrivals (Airlines)
+    output$OhareAirlineArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      colnames(arrivals) <- c("Airline", "Arrivals")
+      colnames(departures) <- c("Airline", "Departures")
+      
+      # Combine and Melt:
+      airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
+      airlineArrDep[is.na(airlineArrDep)] = 0
+      
+      airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
+      
+      # Table
+      datatable(airlineArrDep)
+    })
     
-    departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
-      group_by(CARRIER_NAME) %>%
-      summarise(freq = n())
-    
-    colnames(arrivals) <- c("Airline", "Arrivals")
-    colnames(departures) <- c("Airline", "Departures")
-    
-    # Combine and Melt:
-    airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
-    airlineArrDep[is.na(airlineArrDep)] = 0
-    
-    airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
-    
-    # Plot
-    ggplot(data = airlineArrDepMelt, aes(x = Airline,
-                                         y = value,
-                                         fill = variable)) +
-      labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", color = "Legend") +
-      geom_bar(stat = "identity", position = "dodge") +
-      scale_fill_brewer(palette = "Set1")
-  })
-  
-  # Total # of Departures & Arrivals (Hourly)
-  output$OhareHourlyArrDep <- renderPlot({
-    # Select Proper Month:
-    #oneMonth <- oneMonthReactive()
-    
-    monthNum <- month(mdy(getDate()))
-    #oneMonth <- filter(allOnTimeFlights, month(FL_DATE) == monthNum)
-    
-    # Convert Time Format:
-    if (input$HourFormat)
-    {
-      hourFormat <- hours24
-      oneMonth <- filter(allFlights24, month(FL_DATE) == monthNum)
-    }
-    else
-    {
-      hourFormat <- hours12
-      oneMonth <- filter(allFlights12, month(FL_DATE) == monthNum)
-    }
+    output$MidwayAirlineArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(CARRIER_NAME) %>%
+        summarise(freq = n())
+      
+      colnames(arrivals) <- c("Airline", "Arrivals")
+      colnames(departures) <- c("Airline", "Departures")
+      
+      # Combine and Melt:
+      airlineArrDep <- join_all(list(airlines, arrivals, departures), by = "Airline", type = "full")
+      airlineArrDep[is.na(airlineArrDep)] = 0
+      
+      airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
+      
+      # Table
+      datatable(airlineArrDep)
+    })
     
     
-    # Filter Arrivals and Departures:
-    arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
-      group_by(ARR_TIME) %>%
-      summarise(freq = n()) %>%
-      na.omit()
+    # C2: Total # of Departures & Arrivals (Hourly)
+    output$OhareHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        #oneMonth <- filter(allFlights24, month(FL_DATE) == monthNum)
+      }
+      else
+      {
+        hourFormat <- hours12
+        #oneMonth <- filter(allFlights12, month(FL_DATE) == monthNum)
+      }
+      
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Table
+      datatable(hourlyArrDep)
+    })
     
-    departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
-      group_by(DEP_TIME) %>%
-      summarise(n()) %>%
-      na.omit()
+    output$MidwayHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
+      
+      # Table
+      datatable(hourlyArrDep)
+    })
     
-    colnames(arrivals) <- c("Hour", "Arrivals")
-    colnames(departures) <- c("Hour", "Departures")
     
-    # Combine and Melt:
-    hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
-    hourlyArrDep[is.na(hourlyArrDep)] = 0
+    # C3: Total # of Departures & Arrivals (Weekly)
+    output$OhareWeeklyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Day", "Arrivals")
+      colnames(departures) <- c("Day", "Departures")
+      
+      # Combine and Melt:
+      weeklyArrDep <- join_all(list(arrivals, departures), by = "Day", type = "full")
+      weeklyArrDep[is.na(weeklyArrDep)] = 0
+      
+      weeklyArrDep$Day <- ordered(weeklyArrDep$Day, levels = weekdays[,])
+      
+      hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
+      
+      # Table
+      datatable(weeklyArrDep)
+    })
     
-    hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+    output$MidwayWeeklyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(weekdays(FL_DATE)) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Day", "Arrivals")
+      colnames(departures) <- c("Day", "Departures")
+      
+      # Combine and Melt:
+      weeklyArrDep <- join_all(list(arrivals, departures), by = "Day", type = "full")
+      weeklyArrDep[is.na(weeklyArrDep)] = 0
+      
+      weeklyArrDep$Day <- ordered(weeklyArrDep$Day, levels = weekdays[,])
+      
+      hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
+      
+      # Table
+      datatable(weeklyArrDep)
+    })
     
-    hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
     
-    # Plot
-    ggplot(data = hourlyArrDepMelt, aes(x = Hour,
-                                        y = value,
-                                        group = variable,
-                                        color = variable)) +
-      labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
-      geom_point() +
-      geom_line(size = 1.5, alpha = 0.7)
-  })
-  
-  
-  
-  
+    # C4: Total # of Delays (Hourly)
+    output$OhareHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      # Table
+      datatable(delays)
+    })
+    
+    output$MidwayHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      delaysMelt <- melt(delays, id.vars = "Hour")
+      
+      # Table
+      datatable(delays)
+    })
+    
+    
+    # C5: Total # of Flights (Top 15 Arrival/Destination Airports)
+    output$OhareMostCommonArrivalAirportsTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      arrivalAirports <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ORIGIN_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(arrivalAirports) <- c("Airport", "Flights")
+      
+      # Table
+      datatable(arrivalAirports)
+    })
+    
+    output$OhareMostCommonDestinationAirportsTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      destinationAirports <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(destinationAirports) <- c("Airport", "Flights")
+      
+      # Table
+      datatable(destinationAirports)
+    })
+    
+    output$MidwayMostCommonArrivalAirportsTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      arrivalAirports <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ORIGIN_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(arrivalAirports) <- c("Airport", "Flights")
+      
+      # Table
+      datatable(arrivalAirports)
+    })
+    
+    output$MidwayMostCommonDestinationAirportsTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneMonthReactive()
+      
+      destinationAirports <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      colnames(destinationAirports) <- c("Airport", "Flights")
+      
+      # Table
+      datatable(destinationAirports)
+    })
+    
+    
+    
+    
+    
+    
+    
+    # B====
+    
+    # B1: Total # Departures/Arrivals per Airline (MOnthly)
+    output$Ohare1YearAirlinesArrivalsTable <- renderDT({
+      
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
+      arrivals[is.na(arrivals)] = 0
+      
+      datatable(arrivals)
+    })
+    
+    output$Ohare1YearAirlinesDeparturesTable <- renderDT({
+      
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
+      departures[is.na(departures)] = 0
+      
+      datatable(departures)
+    })
+    
+    output$Midway1YearAirlinesArrivalsTable <- renderDT({
+      
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
+      arrivals[is.na(arrivals)] = 0
+      
+      datatable(arrivals)
+    })
+    
+    output$Midway1YearAirlinesDeparturesTable <- renderDT({
+      
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      
+      departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
+      departures[is.na(departures)] = 0
+      
+      datatable(departures)
+    })
+    
+    
+    # B2: Total # Departures/Arrivals (Hourly + Monthly)
+    output$Ohare1YearHourlyArrivalsTable <- renderDT({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      datatable(allArrivals)
+    })
+    
+    output$Ohare1YearHourlyDeparturesTable <- renderDT({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      datatable(allDepartures)
+    })
+    
+    output$Midway1YearHourlyArrivalsTable <- renderDT({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      datatable(allArrivals)
+    })
+    
+    output$Midway1YearHourlyDeparturesTable <- renderDT({
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+        allFlights <- allFlights24
+      }
+      else
+      {
+        hourFormat <- hours12
+        allFlights <- allFlights12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      datatable(allDepartures)
+    })
+    
+    
+    # B3: Total # Flights for Top 15 Destinations (Monthly)
+    output$Ohare1YearlMostCommonTable <- renderDT({
+      
+      topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
+        group_by(DEST_AIRPORT, month(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq))
+      
+      colnames(destinationAirports) <- c("Airport", "Month", "Flights")
+      
+      datatable(destinationAirports)
+    })
+    
+    output$Midway1YearlMostCommonTable <- renderDT({
+      
+      topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEST_AIRPORT) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq)) %>%
+        top_n(15)
+      
+      destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
+        group_by(DEST_AIRPORT, month(FL_DATE)) %>%
+        summarise(freq = n()) %>%
+        arrange(desc(freq))
+      
+      colnames(destinationAirports) <- c("Airport", "Month", "Flights")
+      
+      datatable(destinationAirports)
+    })
+    
+    
+    # B4: Total # Delays (Monthly)
+    output$Ohare1YearDelaysTable <- renderDT({
+      
+      # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+      #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+      #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+      #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+      #   group_by(month(FL_DATE)) %>%
+      #   summarise_each(funs(sum)) %>%
+      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      # 
+      # delays$FL_DATE <- NULL
+      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      # 
+      # delaysMelt <- melt(delays, id.vars = "Month")
+      # 
+      # ggplot(data = delaysMelt, aes(x = Month,
+      #                               y = value,
+      #                               group = variable,
+      #                               color = variable)) +
+      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+      #   geom_point() +
+      #   geom_line(size = 1.5, alpha = 0.7)
+      
+      # OR
+      
+      delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+        group_by(month(FL_DATE)) %>%
+        summarise_each(funs(sum))
+      
+      delays$FL_DATE <- NULL
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+      
+      datatable(delays)
+    })
+    
+    output$Midway1YearDelaysTable <- renderDT({
+      
+      # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+      #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+      #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+      #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+      #   group_by(month(FL_DATE)) %>%
+      #   summarise_each(funs(sum)) %>%
+      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      # 
+      # delays$FL_DATE <- NULL
+      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      # 
+      # delaysMelt <- melt(delays, id.vars = "Month")
+      # 
+      # ggplot(data = delaysMelt, aes(x = Month,
+      #                               y = value,
+      #                               group = variable,
+      #                               color = variable)) +
+      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+      #   geom_point() +
+      #   geom_line(size = 1.5, alpha = 0.7)
+      
+      # OR
+      
+      delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+        group_by(month(FL_DATE)) %>%
+        summarise_each(funs(sum))
+      
+      delays$FL_DATE <- NULL
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+      
+      datatable(delays)
+    })
+    
+    
+    # A====
+    
+    # A1: TARUSH VIG!?!?!
+    
+    
+    # A2: 1 Day Departures/Arrivals per Airline (Monthly)
+    output$Ohare1YearAirlineHourlyArrivalsTable <- renderDT({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      datatable(allArrivals)
+    })
+    
+    output$Ohare1YearAirlineHourlyDeparturesTable <- renderDT({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      datatable(allDepartures)
+    })
+    
+    output$Midway1YearAirlineHourlyArrivalsTable <- renderDT({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January_ARR = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February_ARR = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March_ARR = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April_ARR = n()) %>% na.omit()
+      arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May_ARR = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June_ARR = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July_ARR = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August_ARR = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September_ARR = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October_ARR = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November_ARR = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December_ARR = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("ARR_TIME")
+      allArrivals <- join_all(list(hourFormat, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "ARR_TIME", type = "full")
+      allArrivals[is.na(allArrivals)] = 0
+      
+      allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
+      
+      datatable(allArrivals)
+    })
+    
+    output$Midway1YearAirlineHourlyDeparturesTable <- renderDT({
+      
+      allFlights <- oneAirlineReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Departures
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January_DEP = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February_DEP = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March_DEP = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April_DEP = n()) %>% na.omit()
+      departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May_DEP = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June_DEP = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July_DEP = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August_DEP = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September_DEP = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October_DEP = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November_DEP = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December_DEP = n()) %>% na.omit()
+      
+      # Combine and Melt
+      colnames(hourFormat) <- c("DEP_TIME")
+      allDepartures <- join_all(list(hourFormat, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "DEP_TIME", type = "full")
+      allDepartures[is.na(allDepartures)] = 0
+      
+      allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
+      
+      datatable(allDepartures)
+    })
+    
+    
+    # A3: 1 Day Departures/Arrivals (Hourly) + Delays?
+    output$Ohare1DayHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      datatable(hourlyArrDep)
+    })
+    
+    output$Ohare1DayHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      datatable(delays)
+    })
+    
+    output$Midway1DayHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      datatable(hourlyArrDep)
+    })
+    
+    output$Midway1DayHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneDayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      datatable(delays)
+    })
+    
+    
+    # A4: 1 Weekday Departures/Arrivals (Hourly) + Delays?
+    output$Ohare1WeekdayHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      datatable(hourlyArrDep)
+    })
+    
+    output$Ohare1WeekdayHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      datatable(delays)
+    })
+    
+    output$Midway1WeekdayHourlyArrDepTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Arrivals and Departures:
+      arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        group_by(ARR_TIME) %>%
+        summarise(freq = n()) %>%
+        na.omit()
+      
+      departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        group_by(DEP_TIME) %>%
+        summarise(n()) %>%
+        na.omit()
+      
+      colnames(arrivals) <- c("Hour", "Arrivals")
+      colnames(departures) <- c("Hour", "Departures")
+      
+      # Combine and Melt:
+      hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
+      hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      datatable(hourlyArrDep)
+    })
+    
+    output$Midway1WeekdayHourlyDelaysTable <- renderDT({
+      # Select Proper Month:
+      oneMonth <- oneWeekdayReactive()
+      
+      # Convert Time Format:
+      if (input$HourFormat)
+      {
+        hourFormat <- hours24
+      }
+      else
+      {
+        hourFormat <- hours12
+      }
+      
+      # Filter Delays
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
+      delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
+      
+      datatable(delays)
+    })
+    
 }
