@@ -184,13 +184,13 @@ server <- function(input, output) {
   oneMonthReactive <- reactive({
     if (input$HourFormat)
     {
-      curMonth <- month(mdy(getDate()))
-      filter(allFlights24, month(FL_DATE) == curMonth)
+      #curMonth <- month(mdy(getDate()))
+      filter(allFlights24, month(FL_DATE) == as.numeric(substr(input$slider_month, 2, 3)))
     }
     else
     {
-      curMonth <- month(mdy(getDate()))
-      filter(allFlights12, month(FL_DATE) == curMonth)
+      #curMonth <- month(mdy(getDate()))
+      filter(allFlights12, month(FL_DATE) == as.numeric(substr(input$slider_month, 2, 3)))
     }
     
   })
@@ -265,21 +265,40 @@ server <- function(input, output) {
       
       airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
       
-      # Table
-      #output$OhareAirlineArrDepTable <- renderDT({datatable(airlineArrDep)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+          group_by(CARRIER_NAME) %>%
+          summarise(freq = n())
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          group_by(CARRIER_NAME) %>%
+          summarise(freq = n())
+        
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
+      
       
       # Plot
-      ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
+      ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
                                            fill = variable)) +
         labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
-        scale_fill_brewer(palette = "Set1")) %>% 
-        layout(yaxis = list(title = "Number of Flights", fixedrange = TRUE)) %>%
-        layout(xaxis = list(fixedrange = TRUE), barmode = "group") %>%
-        config(staticPlot = FALSE, displayModeBar = FALSE, workspace = TRUE)
+        scale_fill_brewer(palette = "Set1") + 
+        ylim(0, maxY)
+  
+        # %>% 
+        # layout(yaxis = list(title = "Number of Flights", fixedrange = TRUE)) %>%
+        # layout(xaxis = list(fixedrange = TRUE), barmode = "group") %>%
+        # config(staticPlot = FALSE, displayModeBar = FALSE, workspace = TRUE)
         #expand_limits(x = 0, y = 0) + 
         #scale_y_continuous(expand = c(0, 0))
       
@@ -312,8 +331,24 @@ server <- function(input, output) {
       
       airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
       
-      # Table
-      #output$MidwayAirlineArrDepTable <- renderDT({datatable(airlineArrDep)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(CARRIER_NAME) %>%
+          summarise(freq = n())
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(CARRIER_NAME) %>%
+          summarise(freq = n())
+        
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
+      
       
       # Plot
       ggplot(data = airlineArrDepMelt, aes(x = Airline,
@@ -321,9 +356,9 @@ server <- function(input, output) {
                                            fill = variable)) +
         labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
-        scale_fill_brewer(palette = "Set1")
+        scale_fill_brewer(palette = "Set1") + 
+        ylim(0, maxY)
     })
-    
     
     # C2: Total # of Departures & Arrivals (Hourly)
     output$OhareHourlyArrDep <- renderPlot({
@@ -2061,6 +2096,8 @@ server <- function(input, output) {
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
       
+      departures$Airline = NULL
+      
       datatable(departures)
     })
     
@@ -2081,6 +2118,8 @@ server <- function(input, output) {
       
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
+      
+      arrivals$Airline = NULL
       
       datatable(arrivals)
     })
@@ -2103,9 +2142,10 @@ server <- function(input, output) {
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
       
+      departures$Airline = NULL
+      
       datatable(departures)
     })
-    
     
     # B2: Total # Departures/Arrivals (Hourly + Monthly)
     output$Ohare1YearHourlyArrivalsTable <- renderDT({
