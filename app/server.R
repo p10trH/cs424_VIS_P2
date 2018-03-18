@@ -37,77 +37,11 @@ chart4 <- ggplot(hourFrame, aes(x = timesFormat, y = data)) + geom_line(na.rm = 
 
 # ---------------------------
 
-# statesData <-
-#   read.csv(file = 'data/statesData.csv',
-#            header = TRUE)
-# 
-# states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
-# 
-# statesWData <- merge(states, statesData, by = "NAME")
-# 
-# # try CartoDB.Positron
-# m <- leaflet(statesWData) %>%
-#   setView(-96, 37.8, 4) %>%
-#   addProviderTiles(providers$Stamen.TonerLite,
-#                    options = providerTileOptions(noWrap = TRUE))
-# 
-# bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-# pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
-# 
-# labels <- sprintf(
-#   "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-#   statesWData$NAME, statesWData$value
-# ) %>% lapply(htmltools::HTML)
-# 
-# m <- m %>% addPolygons(
-#   fillColor = ~pal(statesWData$value),
-#   weight = 2,
-#   opacity = 1,
-#   color = "black",
-#   dashArray = "3",
-#   fillOpacity = 0.7,
-#   highlight = highlightOptions(
-#     weight = 5,
-#     color = "#666",
-#     dashArray = "",
-#     fillOpacity = 0.7,
-#     bringToFront = TRUE),
-#   label = labels,
-#   labelOptions = labelOptions(
-#     style = list("font-weight" = "normal", padding = "3px 8px"),
-#     textsize = "15px",
-#     direction = "auto")) %>%
-#   leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
-#                                        position = "bottomright")
+
 
 # ---------------------------
 
-# Overview. Dygraph, total flights + delays
 
-# allFlightsCondensed <- data.frame(allFlights24$FL_DATE, allFlights24$ORIGIN_AIRPORT, allFlights24$DEST_AIRPORT)
-# colnames (allFlightsCondensed) <- c("FL_DATE", "ORIGIN_AIRPORT", "DEST_AIRPORT")
-# 
-# # ohare
-# allFlightsOHare <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago O'Hare International" | DEST_AIRPORT == "Chicago O'Hare International")
-# allFlightsOHare <- allFlightsOHare %>% add_count(FL_DATE)
-# #allFlightsOHare <- distinct(allFlightsOHare, FL_DATE)
-# allFlightsOHare <- allFlightsOHare[!duplicated(allFlightsOHare$FL_DATE), ]
-# 
-# series1 = xts(x = allFlightsOHare$n, order.by = allFlightsOHare$FL_DATE)
-# 
-# # midway
-# allFlightsMidway <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago Midway International" | DEST_AIRPORT == "Chicago Midway International")
-# allFlightsMidway <- allFlightsMidway %>% add_count(FL_DATE)
-# allFlightsMidway <- allFlightsMidway[!duplicated(allFlightsMidway$FL_DATE), ]
-# 
-# series2 = xts(x = allFlightsMidway$n, order.by = allFlightsMidway$FL_DATE)
-# 
-# #series1 <- data.frame(FL_DATE = allFlightsOHare$FL_DATE, OHARE = allFlightsOHare$n, MIDWAY = allFlightsMidway$n)
-# #series1 = xts(x1 = series1$OHARE, x2 = series1$MIDWAY, order.by = series1$FL_DATE)
-# 
-# allData <- cbind(series1, series2)
-# colnames (allData) <- c("O\'Hare", "Midway")
-# #dygraph(allData) %>% dyRangeSelector()
 
 
 # ---------------------------
@@ -128,6 +62,265 @@ load("data/allFlights.RData")
 
 # Define server
 server <- function(input, output) {
+  
+  # Overview. Dygraph, total flights + delays
+  
+  allFlightsCondensed <- data.frame(allFlights24$FL_DATE, allFlights24$ORIGIN_AIRPORT, allFlights24$DEST_AIRPORT)
+  colnames (allFlightsCondensed) <- c("FL_DATE", "ORIGIN_AIRPORT", "DEST_AIRPORT")
+  
+  # ohare
+  allFlightsOHare <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago O'Hare International" | DEST_AIRPORT == "Chicago O'Hare International")
+  allFlightsOHare <- allFlightsOHare %>% add_count(FL_DATE)
+  allFlightsOHare <- allFlightsOHare[!duplicated(allFlightsOHare$FL_DATE), ]
+  
+  series1 = xts(x = allFlightsOHare$n, order.by = allFlightsOHare$FL_DATE)
+  
+  # midway
+  allFlightsMidway <- filter(allFlightsCondensed, ORIGIN_AIRPORT == "Chicago Midway International" | DEST_AIRPORT == "Chicago Midway International")
+  allFlightsMidway <- allFlightsMidway %>% add_count(FL_DATE)
+  allFlightsMidway <- allFlightsMidway[!duplicated(allFlightsMidway$FL_DATE), ]
+  
+  series2 = xts(x = allFlightsMidway$n, order.by = allFlightsMidway$FL_DATE)
+  
+
+  allData <- cbind(series1, series2)
+  colnames (allData) <- c("O\'Hare", "Midway")
+  
+  
+  output$dygraphTotalFlights <- renderDygraph({
+    
+    dygraph(allData, group = "overview") %>% dyRangeSelector(height = 50, strokeColor = "#484747", fillColor = "#DDDDDD") %>%
+      dyOptions(colors = c("#1E5493", "#860800")) %>%
+      dyAxis("y", label = "Flights") %>%
+      dyOptions(includeZero = TRUE) %>%
+      dyOptions(strokeWidth = 3) %>%
+      #dyOptions(axisLabelFontSize = 16) %>%
+      dyLegend(hideOnMouseOut = FALSE, width = 350, show = "follow")%>% 
+      dyRoller(rollPeriod = 1) %>%
+      dyShading(from = "2017-1-1", to = "2017-1-31", color = "#AFAFAF") %>%
+      dyShading(from = "2017-3-1", to = "2017-3-31", color = "#AFAFAF") %>%
+      dyShading(from = "2017-5-1", to = "2017-5-31", color = "#AFAFAF") %>%
+      dyShading(from = "2017-7-1", to = "2017-7-31", color = "#AFAFAF") %>%
+      dyShading(from = "2017-9-1", to = "2017-9-30", color = "#AFAFAF") %>%
+      dyShading(from = "2017-11-1", to = "2017-11-30", color = "#AFAFAF") %>%
+      dyEvent("2017-11-23", "Thanksgiving", labelLoc = "bottom")
+  })
+  
+  # Leaflet
+  
+  # Day
+  
+   statesData <-
+     read.csv(file = 'data/statesData.csv',
+              header = TRUE)
+   
+  states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
+   
+  statesWData <- sp::merge(states, statesData, by = "NAME")
+  
+  output$leafDay1 <- renderLeaflet({ 
+    
+    # # try CartoDB.Positron
+     m <- leaflet(statesWData) %>%
+       setView(-96, 37.8, 4) %>%
+       addProviderTiles(providers$Stamen.TonerLite,
+                        options = providerTileOptions(noWrap = TRUE))
+     
+     bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+     pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+     
+     labels <- sprintf(
+       "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+       statesWData$NAME, statesWData$value
+     ) %>% lapply(htmltools::HTML)
+    
+     m <- m %>% addPolygons(
+       fillColor = ~pal(statesWData$value),
+       weight = 2,
+       opacity = 1,
+       color = "black",
+       dashArray = "3",
+       fillOpacity = 0.7,
+       highlight = highlightOptions(
+         weight = 5,
+         color = "#666",
+         dashArray = "",
+         fillOpacity = 0.7,
+         bringToFront = TRUE),
+       label = labels,
+       labelOptions = labelOptions(
+         style = list("font-weight" = "normal", padding = "3px 8px"),
+         textsize = "15px",
+         direction = "auto")) %>%
+       leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+                                            position = "bottomright") %>% syncWith("maps")
+    
+  })
+  
+  output$leafDay2 <- renderLeaflet({
+    # # try CartoDB.Positron
+    m <- leaflet(statesWData) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+      statesWData$NAME, statesWData$value
+    ) %>% lapply(htmltools::HTML)
+
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWData$value),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+                         position = "bottomright") %>% syncWith("maps")
+  })
+  
+  output$leafDay3 <- renderLeaflet({
+    # # try CartoDB.Positron
+    m <- leaflet(statesWData) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+      statesWData$NAME, statesWData$value
+    ) %>% lapply(htmltools::HTML)
+
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWData$value),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+                         position = "bottomright") %>% syncWith("maps")
+  })
+  
+  output$leafDay4 <- renderLeaflet({
+    # # try CartoDB.Positron
+    m <- leaflet(statesWData) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+      statesWData$NAME, statesWData$value
+    ) %>% lapply(htmltools::HTML)
+
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWData$value),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+                         position = "bottomright") %>% syncWith("maps")
+  })
+  
+  output$leafMonth1 <- renderLeaflet({ })
+  
+  output$leafMonth2 <- renderLeaflet({ })
+  
+  output$leafMonth3 <- renderLeaflet({ })
+  
+  output$leafMonth4 <- renderLeaflet({ })
+  
+  output$leafYear1 <- renderLeaflet({ 
+    # # try CartoDB.Positron
+    m <- leaflet(statesWData) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+      statesWData$NAME, statesWData$value
+    ) %>% lapply(htmltools::HTML)
+
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWData$value),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+                         position = "bottomright") %>% syncWith("maps")
+    })
+  
+  output$leafYear2 <- renderLeaflet({ })
+  
+  output$leafYear3 <- renderLeaflet({ })
+  
+  output$leafYear4 <- renderLeaflet({ })
+  
+
+  ######
   
   #Other Data:
   hours24 <- as.data.frame(c("00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"))
