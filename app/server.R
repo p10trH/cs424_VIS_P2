@@ -490,29 +490,17 @@ server <- function(input, output) {
       # Plot
       ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
-                                           fill = variable)) +
+                                           fill = variable,
+                                           text = value)) +
         labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
       config(staticPlot = FALSE, displayModeBar = FALSE) %>%
       layout(yaxis = list(fixedrange = TRUE)) %>%
       layout(xaxis = list(fixedrange = TRUE))
-  
-        # %>% 
-        # layout(yaxis = list(title = "Number of Flights", fixedrange = TRUE)) %>%
-        # layout(xaxis = list(fixedrange = TRUE), barmode = "group") %>%
-        # config(staticPlot = FALSE, displayModeBar = FALSE, workspace = TRUE)
-        #expand_limits(x = 0, y = 0) + 
-        #scale_y_continuous(expand = c(0, 0))
-      
-      # plot_ly(data = airlineArrDepMelt, x = ~Airline, y = ~value, type = "bar") %>%
-      #   layout(yaxis = list(title = "Number of Flights", fixedrange = TRUE)) %>%
-      #   layout(xaxis = list(fixedrange = TRUE), barmode = "group") %>%
-      #   config(staticPlot = FALSE, displayModeBar = FALSE, workspace = TRUE)
-      
     })
     
     output$MidwayAirlineArrDep <- renderPlotly({
@@ -559,11 +547,12 @@ server <- function(input, output) {
       # Plot
       ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
-                                           fill = variable)) +
+                                           fill = variable,
+                                           text = value)) +
         labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -651,11 +640,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
+                                          color = variable,
+                                          text = value)) +
         labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -738,11 +728,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
+                                          color = variable,
+                                          text = value)) +
         labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -800,11 +791,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Day,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
+                                          color = variable,
+                                          text = value)) +
         labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -860,11 +852,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Day,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
+                                          color = variable,
+                                          text = value)) +
         labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -929,11 +922,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
-                                    color = variable)) + 
+                                    color = variable,
+                                    text = value)) + 
         labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
         geom_line(size = 1.5, alpha = 0.7) +
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -996,11 +990,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
-                                    color = variable)) + 
+                                    color = variable,
+                                    text = value)) + 
         labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1193,10 +1188,11 @@ server <- function(input, output) {
       arrivalsMelt <- melt(arrivals)
       
       ggplotly(ggplot(data = arrivalsMelt, aes(x = variable,
-                                      y = Airline)) +
+                                      y = Airline,
+                                      text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1223,10 +1219,11 @@ server <- function(input, output) {
       departuresMelt <- melt(departures)
       
       ggplotly(ggplot(data = departuresMelt, aes(x = variable,
-                                        y = Airline)) +
+                                        y = Airline,
+                                        text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1263,10 +1260,11 @@ server <- function(input, output) {
       }
       
       ggplotly(ggplot(data = arrivalsMelt, aes(x = variable,
-                                      y = Airline)) +
+                                      y = Airline,
+                                      text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
         labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend") +
-        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#85aef2", high = "#001a44")) %>%
+        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#85aef2", high = "#001a44"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1303,10 +1301,11 @@ server <- function(input, output) {
       }
       
       ggplotly(ggplot(data = departuresMelt, aes(x = variable,
-                                        y = Airline)) +
+                                        y = Airline,
+                                        text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1352,10 +1351,11 @@ server <- function(input, output) {
       allArrivalsMelt <- melt(allArrivals)
       
       ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
-                                         y = ARR_TIME)) +
+                                         y = ARR_TIME,
+                                         text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1399,10 +1399,11 @@ server <- function(input, output) {
       allDeparturesMelt <- melt(allDepartures)
       
       ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
-                                           y = DEP_TIME)) +
+                                           y = DEP_TIME,
+                                           text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1455,10 +1456,11 @@ server <- function(input, output) {
       }
       
       ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
-                                         y = ARR_TIME)) +
+                                         y = ARR_TIME,
+                                         text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1511,10 +1513,11 @@ server <- function(input, output) {
       }
       
       ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
-                                           y = DEP_TIME)) +
+                                           y = DEP_TIME,
+                                           text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
