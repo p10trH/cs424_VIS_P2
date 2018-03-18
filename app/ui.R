@@ -299,18 +299,18 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1DayHourlyArrDep")),
+                                                                  plotlyOutput("Ohare1DayHourlyArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1DayHourlyArrDep"))
+                                                                  plotlyOutput("Midway1DayHourlyArrDep"))
                                                          ),
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1WeekdayHourlyDelays")),
+                                                                  plotlyOutput("Ohare1DayHourlyDelays")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1WeekdayHourlyDelays"))
+                                                                  plotlyOutput("Midway1DayHourlyDelays"))
                                                          )
                                                          ))
                                               
@@ -429,7 +429,7 @@ ui <- fluidPage(
                                                                   plotlyOutput("OhareAirlineArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("MidwayAirlineArrDep"))
+                                                                  plotlyOutput("MidwayAirlineArrDep"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -450,10 +450,10 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("OhareHourlyArrDep")),
+                                                                  plotlyOutput("OhareHourlyArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("MidwayHourlyArrDep"))
+                                                                  plotlyOutput("MidwayHourlyArrDep"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -474,10 +474,10 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("OhareWeeklyArrDep")),
+                                                                  plotlyOutput("OhareWeeklyArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("MidwayWeeklyArrDep"))
+                                                                  plotlyOutput("MidwayWeeklyArrDep"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -498,10 +498,10 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("OhareHourlyDelays")),
+                                                                  plotlyOutput("OhareHourlyDelays")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("MidwayHourlyDelays"))
+                                                                  plotlyOutput("MidwayHourlyDelays"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -615,16 +615,16 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1YearAirlinesArrivals")),
+                                                                  plotlyOutput("Ohare1YearAirlinesArrivals")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1YearAirlinesDepartures")),
+                                                                  plotlyOutput("Ohare1YearAirlinesDepartures")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1YearAirlinesArrivals")),
+                                                                  plotlyOutput("Midway1YearAirlinesArrivals")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1YearAirlinesDepartures"))
+                                                                  plotlyOutput("Midway1YearAirlinesDepartures"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -651,16 +651,16 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1YearHourlyArrivals")),
+                                                                  plotlyOutput("Ohare1YearHourlyArrivals")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1YearHourlyDepartures")),
+                                                                  plotlyOutput("Ohare1YearHourlyDepartures")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1YearHourlyArrivals")),
+                                                                  plotlyOutput("Midway1YearHourlyArrivals")),
                                                            column(3,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1YearHourlyDepartures"))
+                                                                  plotlyOutput("Midway1YearHourlyDepartures"))
                                                          )))
                                             ),
                                             fluidRow(
@@ -705,10 +705,10 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("Ohare1YearlMostCommon")),
+                                                                  plotlyOutput("Ohare1YearlMostCommon")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("Midway1YearlMostCommon"))
+                                                                  plotlyOutput("Midway1YearlMostCommon"))
                                                          )))
                                             ),
                                             fluidRow(

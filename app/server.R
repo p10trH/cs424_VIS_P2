@@ -276,41 +276,51 @@ server <- function(input, output) {
   
   output$leafMonth4 <- renderLeaflet({ })
   
-  output$leafYear1 <- renderLeaflet({ 
-    # # try CartoDB.Positron
-    m <- leaflet(statesWData) %>%
-      setView(-96, 37.8, 4) %>%
-      addProviderTiles(providers$Stamen.TonerLite,
-                       options = providerTileOptions(noWrap = TRUE))
+  output$leafYear1 <- renderLeaflet({
     
-    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
-    
-    labels <- sprintf(
-      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-      statesWData$NAME, statesWData$value
-    ) %>% lapply(htmltools::HTML)
-
-    m <- m %>% addPolygons(
-      fillColor = ~pal(statesWData$value),
-      weight = 2,
-      opacity = 1,
-      color = "black",
-      dashArray = "3",
-      fillOpacity = 0.7,
-      highlight = highlightOptions(
-        weight = 5,
-        color = "#666",
-        dashArray = "",
-        fillOpacity = 0.7,
-        bringToFront = TRUE),
-      label = labels,
-      labelOptions = labelOptions(
-        style = list("font-weight" = "normal", padding = "3px 8px"),
-        textsize = "15px",
-        direction = "auto")) %>%
-      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
-                         position = "bottomright") %>% syncWith("maps")
+    # allStatesArrivals <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+    #   separate(ORIGIN_CITY_NAME, c("ORIGIN_CITY", "ORIGIN_STATE"), sep = ",")
+    # 
+    # statesData <- allStatesArrivals %>% group_by(ORIGIN_STATE) %>% summarise(n = n()) %>% mutate(freq = (n / sum(n)) * 100)
+    # 
+    # colnames(statesData) <- c("STUSPS", "value")
+    # 
+    # statesWData <- sp::merge(states, statesData, by = "STUSPS")
+    # 
+    # # # try CartoDB.Positron
+    # m <- leaflet(statesWData) %>%
+    #   setView(-96, 37.8, 4) %>%
+    #   addProviderTiles(providers$Stamen.TonerLite,
+    #                    options = providerTileOptions(noWrap = TRUE))
+    # 
+    # bins <- c(0, 50, 100, 500, 1000, 5000, 10000, 25000, Inf)
+    # pal <- colorBin("YlOrRd", domain = statesWData$Flights, bins = bins)
+    # 
+    # labels <- sprintf(
+    #   "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+    #   statesWData$NAME, statesWData$Flights
+    # ) %>% lapply(htmltools::HTML)
+    # 
+    # m <- m %>% addPolygons(
+    #   fillColor = ~pal(statesWData$Flights),
+    #   weight = 2,
+    #   opacity = 1,
+    #   color = "black",
+    #   dashArray = "3",
+    #   fillOpacity = 0.7,
+    #   highlight = highlightOptions(
+    #     weight = 5,
+    #     color = "#666",
+    #     dashArray = "",
+    #     fillOpacity = 0.7,
+    #     bringToFront = TRUE),
+    #   label = labels,
+    #   labelOptions = labelOptions(
+    #     style = list("font-weight" = "normal", padding = "3px 8px"),
+    #     textsize = "15px",
+    #     direction = "auto")) %>%
+    #   leaflet::addLegend(pal = pal, values = ~Flights, opacity = 0.7, title = NULL,
+    #                      position = "bottomright") %>% syncWith("maps")
     })
   
   output$leafYear2 <- renderLeaflet({ })
@@ -478,7 +488,7 @@ server <- function(input, output) {
       
       
       # Plot
-      ggplot(data = airlineArrDepMelt, aes(x = Airline,
+      ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
                                            fill = variable)) +
         labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
@@ -486,7 +496,10 @@ server <- function(input, output) {
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY)
+        ylim(0, maxY)) %>%
+      config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+      layout(yaxis = list(fixedrange = TRUE)) %>%
+      layout(xaxis = list(fixedrange = TRUE))
   
         # %>% 
         # layout(yaxis = list(title = "Number of Flights", fixedrange = TRUE)) %>%
@@ -502,7 +515,7 @@ server <- function(input, output) {
       
     })
     
-    output$MidwayAirlineArrDep <- renderPlot({
+    output$MidwayAirlineArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -544,17 +557,20 @@ server <- function(input, output) {
       
       
       # Plot
-      ggplot(data = airlineArrDepMelt, aes(x = Airline,
+      ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
                                            fill = variable)) +
         labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY)
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     # C2: Total # of Departures & Arrivals (Hourly)
-    output$OhareHourlyArrDep <- renderPlot({
+    output$OhareHourlyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -562,12 +578,10 @@ server <- function(input, output) {
       if (input$HourFormat)
       {
         hourFormat <- hours24
-        #oneMonth <- filter(allFlights24, month(FL_DATE) == monthNum)
       }
       else
       {
         hourFormat <- hours12
-        #oneMonth <- filter(allFlights12, month(FL_DATE) == monthNum)
       }
       
       
@@ -585,28 +599,69 @@ server <- function(input, output) {
       colnames(arrivals) <- c("Hour", "Arrivals")
       colnames(departures) <- c("Hour", "Departures")
       
+      #Add Delays Line:
+      delays <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" | DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+
+      
       # Combine and Melt:
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
+
+      hourlyArrDep$Delays <- delays$Total
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
-      # Table
-      #output$OhareHourlyArrDepTable <- renderDT({datatable(hourlyArrDep)})
+
+      
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+          group_by(ARR_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          group_by(DEP_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
       
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$MidwayHourlyArrDep <- renderPlot({
+    output$MidwayHourlyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -634,30 +689,68 @@ server <- function(input, output) {
       colnames(arrivals) <- c("Hour", "Arrivals")
       colnames(departures) <- c("Hour", "Departures")
       
+      #Add Delays Line:
+      delays <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" | DEST_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
       # Combine and Melt:
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
+      
+      hourlyArrDep$Delays <- delays$Total
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
-      # Table
-      #output$MidwayHourlyArrDepTable <- renderDT({datatable(hourlyArrDep)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(ARR_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(DEP_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
       
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
     # C3: Total # of Departures & Arrivals (Weekly)
-    output$OhareWeeklyArrDep <- renderPlot({
+    output$OhareWeeklyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -683,20 +776,41 @@ server <- function(input, output) {
       
       hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
       
-      # Table
-      #output$OhareWeeklyArrDepTable <- renderDT({datatable(weeklyArrDep)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+          group_by(weekdays(FL_DATE)) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          group_by(weekdays(FL_DATE)) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        maxY <- max(weeklyArrDep$Arrivals, arrivals2$freq, weeklyArrDep$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
       
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Day,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Day,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$MidwayWeeklyArrDep <- renderPlot({
+    output$MidwayWeeklyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -722,22 +836,43 @@ server <- function(input, output) {
       
       hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
       
-      # Table
-      #output$MidwayWeeklyArrDepTable <- renderDT({datatable(weeklyArrDep)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(weekdays(FL_DATE)) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(weekdays(FL_DATE)) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        maxY <- max(weeklyArrDep$Arrivals, arrivals2$freq, weeklyArrDep$Departures, departures2$freq)
+      }
+      else
+      {
+        maxY <- max(arrivals$Arrivals, departures$Departures)
+      }
       
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Day,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Day,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
     # C4: Total # of Delays (Hourly)
-    output$OhareHourlyDelays <- renderPlot({
+    output$OhareHourlyDelays <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -769,20 +904,42 @@ server <- function(input, output) {
       
       delaysMelt <- melt(delays, id.vars = "Hour")
       
-      # Table
-      #output$OhareHourlyDelaysTable <- renderDT({datatable(delays)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        delays2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+          group_by(DEP_TIME) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        colnames(delays2) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        maxY <- max(delays$Carrier, delays$Weather, delays$NAS, delays$Security, delays$Aircraft, delays$Total, 
+                    delays2$Carrier, delays2$Weather, delays2$NAS, delays2$Security, delays2$Aircraft, delays2$Total)
+      }
+      else
+      {
+        maxY <- max(delays$Carrier, delays$Weather, delays$NAS, delays$Security, delays$Aircraft, delays$Total)
+      }
       
       # Plot
-      ggplot(data = delaysMelt, aes(x = Hour, 
+      ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
         labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) +
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$MidwayHourlyDelays <- renderPlot({
+    output$MidwayHourlyDelays <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -814,17 +971,39 @@ server <- function(input, output) {
       
       delaysMelt <- melt(delays, id.vars = "Hour")
       
-      # Table
-      #output$MidwayHourlyDelaysTable <- renderDT({datatable(delays)})
+      # Common Scale
+      if (input$checkbox_scale)
+      {
+        delays2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+          group_by(DEP_TIME) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        colnames(delays2) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        maxY <- max(delays$Carrier, delays$Weather, delays$NAS, delays$Security, delays$Aircraft, delays$Total, 
+                    delays2$Carrier, delays2$Weather, delays2$NAS, delays2$Security, delays2$Aircraft, delays2$Total)
+      }
+      else
+      {
+        maxY <- max(delays$Carrier, delays$Weather, delays$NAS, delays$Security, delays$Aircraft, delays$Total)
+      }
       
       # Plot
-      ggplot(data = delaysMelt, aes(x = Hour, 
+      ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
         labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
@@ -841,8 +1020,22 @@ server <- function(input, output) {
       
       colnames(arrivalAirports) <- c("Airport", "Flights")
       
-      # Table
-      #output$OhareMostCommonArrivalAirportsTable <- renderDT({datatable(arrivalAirports)})
+      if (input$checkbox_scale)
+      {
+        arrivalAirports2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+          group_by(ORIGIN_AIRPORT) %>%
+          summarise(freq = n()) %>%
+          arrange(desc(freq)) %>%
+          top_n(15)
+        
+        colnames(arrivalAirports2) <- c("Airport", "Flights")
+        
+        maxY <- max(arrivalAirports$Flights, arrivalAirports2$Flights)
+      }
+      else
+      {
+        maxY <- max(arrivalAirports$Flights)
+      }
       
       # Plot
       ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
@@ -850,7 +1043,8 @@ server <- function(input, output) {
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_bar(stat = "identity", fill = "red") + 
         guides(fill = FALSE) +
-        coord_flip()
+        coord_flip() + 
+        ylim(0, maxY)
     })
     
     output$OhareMostCommonDestinationAirports <- renderPlot({
@@ -865,8 +1059,22 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Flights")
       
-      # Table
-      #output$OhareMostCommonDestinationAirportsTable <- renderDT({datatable(destinationAirports)})
+      if (input$checkbox_scale)
+      {
+        destinationAirports2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          group_by(DEST_AIRPORT) %>%
+          summarise(freq = n()) %>%
+          arrange(desc(freq)) %>%
+          top_n(15)
+        
+        colnames(destinationAirports2) <- c("Airport", "Flights")
+        
+        maxY <- max(destinationAirports$Flights, destinationAirports2$Flights)
+      }
+      else
+      {
+        maxY <- max(destinationAirports$Flights)
+      }
       
       # Plot
       ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
@@ -874,7 +1082,8 @@ server <- function(input, output) {
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_bar(stat = "identity", fill = "blue") + 
         guides(fill = FALSE) +
-        coord_flip()
+        coord_flip() +
+        ylim(0, maxY)
     })
     
     output$MidwayMostCommonArrivalAirports <- renderPlot({
@@ -889,8 +1098,22 @@ server <- function(input, output) {
       
       colnames(arrivalAirports) <- c("Airport", "Flights")
       
-      # Table
-      #output$MidwayMostCommonArrivalAirportsTable <- renderDT({datatable(arrivalAirports)})
+      if (input$checkbox_scale)
+      {
+        arrivalAirports2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(ORIGIN_AIRPORT) %>%
+          summarise(freq = n()) %>%
+          arrange(desc(freq)) %>%
+          top_n(15)
+        
+        colnames(arrivalAirports2) <- c("Airport", "Flights")
+        
+        maxY <- max(arrivalAirports$Flights, arrivalAirports2$Flights)
+      }
+      else
+      {
+        maxY <- max(arrivalAirports$Flights)
+      }
       
       # Plot
       ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
@@ -898,7 +1121,8 @@ server <- function(input, output) {
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_bar(stat = "identity", fill = "red") + 
         guides(fill = FALSE) +
-        coord_flip()
+        coord_flip() +
+        ylim(0, maxY)
     })
     
     output$MidwayMostCommonDestinationAirports <- renderPlot({
@@ -913,8 +1137,22 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Flights")
       
-      # Table
-      #output$MidwayMostCommonDestinationAirportsTable <- renderDT({datatable(destinationAirports)})
+      if (input$checkbox_scale)
+      {
+        destinationAirports2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(DEST_AIRPORT) %>%
+          summarise(freq = n()) %>%
+          arrange(desc(freq)) %>%
+          top_n(15)
+        
+        colnames(destinationAirports2) <- c("Airport", "Flights")
+        
+        maxY <- max(destinationAirports$Flights, destinationAirports2$Flights)
+      }
+      else
+      {
+        maxY <- max(destinationAirports$Flights)
+      }
       
       # Plot
       ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
@@ -922,7 +1160,8 @@ server <- function(input, output) {
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_bar(stat = "identity", fill = "blue") + 
         guides(fill = FALSE) +
-        coord_flip()
+        coord_flip() +
+        ylim(0, maxY)
     })
     
     
@@ -933,7 +1172,7 @@ server <- function(input, output) {
     # B====
     
     # B1: Total # Departures/Arrivals per Airline (MOnthly)
-    output$Ohare1YearAirlinesArrivals <- renderPlot({
+    output$Ohare1YearAirlinesArrivals <- renderPlotly({
       
       arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
       arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
@@ -953,14 +1192,17 @@ server <- function(input, output) {
       
       arrivalsMelt <- melt(arrivals)
       
-      ggplot(data = arrivalsMelt, aes(x = variable,
+      ggplotly(ggplot(data = arrivalsMelt, aes(x = variable,
                                       y = Airline)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Ohare1YearAirlinesDepartures <- renderPlot({
+    output$Ohare1YearAirlinesDepartures <- renderPlotly({
       
       departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
       departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
@@ -980,14 +1222,17 @@ server <- function(input, output) {
       
       departuresMelt <- melt(departures)
       
-      ggplot(data = departuresMelt, aes(x = variable,
+      ggplotly(ggplot(data = departuresMelt, aes(x = variable,
                                         y = Airline)) +
         geom_tile(aes(fill = departuresMelt$value)) +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearAirlinesArrivals <- renderPlot({
+    output$Midway1YearAirlinesArrivals <- renderPlotly({
       
       arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
       arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
@@ -1007,14 +1252,27 @@ server <- function(input, output) {
       
       arrivalsMelt <- melt(arrivals)
       
-      ggplot(data = arrivalsMelt, aes(x = variable,
+      #Common Scale
+      if (input$checkbox_scale)
+      {
+        maxY <- 8190
+      }
+      else
+      {
+        maxY <- 7747
+      }
+      
+      ggplotly(ggplot(data = arrivalsMelt, aes(x = variable,
                                       y = Airline)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
-        scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend") +
+        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#85aef2", high = "#001a44")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearAirlinesDepartures <- renderPlot({
+    output$Midway1YearAirlinesDepartures <- renderPlotly({
       
       departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
       departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
@@ -1034,16 +1292,29 @@ server <- function(input, output) {
       
       departuresMelt <- melt(departures)
       
-      ggplot(data = departuresMelt, aes(x = variable,
+      #Common Scale
+      if (input$checkbox_scale)
+      {
+        maxY <- 8183
+      }
+      else
+      {
+        maxY <- 7747
+      }
+      
+      ggplotly(ggplot(data = departuresMelt, aes(x = variable,
                                         y = Airline)) +
         geom_tile(aes(fill = departuresMelt$value)) +
-        scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")
+        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
     # B2: Total # Departures/Arrivals (Hourly + Monthly)
-    output$Ohare1YearHourlyArrivals <- renderPlot({
+    output$Ohare1YearHourlyArrivals <- renderPlotly({
       
       # Convert Time Format:
       if (input$HourFormat)
@@ -1080,14 +1351,17 @@ server <- function(input, output) {
       
       allArrivalsMelt <- melt(allArrivals)
       
-      ggplot(data = allArrivalsMelt, aes(x = variable,
+      ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
                                          y = ARR_TIME)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Ohare1YearHourlyDepartures <- renderPlot({
+    output$Ohare1YearHourlyDepartures <- renderPlotly({
       
       # Convert Time Format:
       if (input$HourFormat)
@@ -1124,14 +1398,17 @@ server <- function(input, output) {
       
       allDeparturesMelt <- melt(allDepartures)
       
-      ggplot(data = allDeparturesMelt, aes(x = variable,
+      ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
                                            y = DEP_TIME)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearHourlyArrivals <- renderPlot({
+    output$Midway1YearHourlyArrivals <- renderPlotly({
       
       # Convert Time Format:
       if (input$HourFormat)
@@ -1168,14 +1445,26 @@ server <- function(input, output) {
       
       allArrivalsMelt <- melt(allArrivals)
       
-      ggplot(data = allArrivalsMelt, aes(x = variable,
+      if (input$checkbox_scale)
+      {
+        maxY <- 1777
+      }
+      else
+      {
+        maxY <- 675
+      }
+      
+      ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
                                          y = ARR_TIME)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearHourlyDepartures <- renderPlot({
+    output$Midway1YearHourlyDepartures <- renderPlotly({
       
       # Convert Time Format:
       if (input$HourFormat)
@@ -1212,16 +1501,28 @@ server <- function(input, output) {
       
       allDeparturesMelt <- melt(allDepartures)
       
-      ggplot(data = allDeparturesMelt, aes(x = variable,
+      if (input$checkbox_scale)
+      {
+        maxY <- 2076
+      }
+      else
+      {
+        maxY <- 756
+      }
+      
+      ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
                                            y = DEP_TIME)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
-        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+        scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
     # B3: Total # Flights for Top 15 Destinations (Monthly)
-    output$Ohare1YearlMostCommon <- renderPlot({
+    output$Ohare1YearlMostCommon <- renderPlotly({
       
       topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
         group_by(DEST_AIRPORT) %>%
@@ -1236,16 +1537,19 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
-      ggplot(data = destinationAirports, aes(x = Month, 
+      ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
                                              group = Airport,
                                              color = Airport)) + 
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearlMostCommon <- renderPlot({
+    output$Midway1YearlMostCommon <- renderPlotly({
       
       topAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
         group_by(DEST_AIRPORT) %>%
@@ -1260,13 +1564,26 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
-      ggplot(data = destinationAirports, aes(x = Month, 
+      if (input$checkbox_scale)
+      {
+        maxY <- 984 
+      }
+      else
+      {
+        maxY <- 426 
+      }
+      
+      ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
                                              group = Airport,
                                              color = Airport)) + 
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
@@ -1403,7 +1720,7 @@ server <- function(input, output) {
       allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
       
       allArrivalsMelt <- melt(allArrivals)
-      
+
       ggplot(data = allArrivalsMelt, aes(x = variable,
                                          y = ARR_TIME)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
@@ -1544,8 +1861,13 @@ server <- function(input, output) {
     })
     
     
+    
+    
+    
+    
+    
     # A3: 1 Day Departures/Arrivals (Hourly) + Delays?
-    output$Ohare1DayHourlyArrDep <- renderPlot({
+    output$Ohare1DayHourlyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneDayReactive()
       
@@ -1581,17 +1903,49 @@ server <- function(input, output) {
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
+      #Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+          group_by(ARR_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          group_by(DEP_TIME) %>%
+          summarise(n()) %>%
+          na.omit()
+        
+        colnames(arrivals2) <- c("Hour", "Arrivals")
+        colnames(departures2) <- c("Hour", "Departures")
+        
+        # Combine and Melt:
+        hourlyArrDep2 <- join_all(list(hourFormat, arrivals2, departures2), by = "Hour", type = "full")
+        hourlyArrDep2[is.na(hourlyArrDep2)] = 0
+        
+        hourlyArrDepMelt2 <- melt(hourlyArrDep2, id.vars = "Hour")
+        
+        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value)
+      }
+      else
+      {
+        maxY <- max(hourlyArrDepMelt$value)
+      }
+      
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Ohare1DayHourlyDelays <- renderPlot({
+    output$Ohare1DayHourlyDelays <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneDayReactive()
       
@@ -1623,16 +1977,45 @@ server <- function(input, output) {
       
       delaysMelt <- melt(delays, id.vars = "Hour")
       
-      ggplot(data = delaysMelt, aes(x = Hour, 
+      if (input$checkbox_scale)
+      {
+        delays2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+          group_by(DEP_TIME) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        colnames(delays2) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        delays2 <- join_all(list(hourFormat, delays2), by = "Hour", type = "full")
+        delays2[is.na(delays2)] = 0
+        
+        delays2$Hour <- ordered(delays2$Hour, levels = hourFormat[,])
+        
+        delaysMelt2 <- melt(delays2, id.vars = "Hour")
+        
+        maxY <- max(delaysMelt$value, delaysMelt2$value)
+      }
+      else
+      {
+        maxY <- max(delaysMelt$value)
+      }
+      
+      ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
         labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1DayHourlyArrDep <- renderPlot({
+    output$Midway1DayHourlyArrDep <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneDayReactive()
       
@@ -1668,17 +2051,49 @@ server <- function(input, output) {
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
+      #Common Scale
+      if (input$checkbox_scale)
+      {
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(ARR_TIME) %>%
+          summarise(freq = n()) %>%
+          na.omit()
+        
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          group_by(DEP_TIME) %>%
+          summarise(n()) %>%
+          na.omit()
+        
+        colnames(arrivals2) <- c("Hour", "Arrivals")
+        colnames(departures2) <- c("Hour", "Departures")
+        
+        # Combine and Melt:
+        hourlyArrDep2 <- join_all(list(hourFormat, arrivals2, departures2), by = "Hour", type = "full")
+        hourlyArrDep2[is.na(hourlyArrDep2)] = 0
+        
+        hourlyArrDepMelt2 <- melt(hourlyArrDep2, id.vars = "Hour")
+        
+        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value)
+      }
+      else
+      {
+        maxY <- max(hourlyArrDepMelt$value)
+      }
+      
       # Plot
-      ggplot(data = hourlyArrDepMelt, aes(x = Hour,
+      ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
                                           color = variable)) +
         labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
         geom_point() +
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1DayHourlyDelays <- renderPlot({
+    output$Midway1DayHourlyDelays <- renderPlotly({
       # Select Proper Month:
       oneMonth <- oneDayReactive()
       
@@ -1710,14 +2125,49 @@ server <- function(input, output) {
       
       delaysMelt <- melt(delays, id.vars = "Hour")
       
-      ggplot(data = delaysMelt, aes(x = Hour, 
+      if (input$checkbox_scale)
+      {
+        delays2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+          group_by(DEP_TIME) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        colnames(delays2) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        delays2 <- join_all(list(hourFormat, delays2), by = "Hour", type = "full")
+        delays2[is.na(delays2)] = 0
+        
+        delays2$Hour <- ordered(delays2$Hour, levels = hourFormat[,])
+        
+        delaysMelt2 <- melt(delays2, id.vars = "Hour")
+        
+        maxY <- max(delaysMelt$value, delaysMelt2$value)
+      }
+      else
+      {
+        maxY <- max(delaysMelt$value)
+      }
+      
+      ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
         labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() + 
-        geom_line(size = 1.5, alpha = 0.7)
+        geom_line(size = 1.5, alpha = 0.7) + 
+        ylim(0, maxY)) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
+    
+    
+    
+    
+    
+    
     
     
     # A4: 1 Weekday Departures/Arrivals (Hourly) + Delays?
