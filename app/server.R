@@ -108,72 +108,157 @@ server <- function(input, output) {
   
   # Leaflet
   
+  substrRight <- function(x, n){
+    substr(x, nchar(x)-n+1, nchar(x))
+  }
+  
+  
+  allFlightsMap <- data.frame(FL_DATE = allOnTimeFlights$FL_DATE, ARR_TIMESTAMP = allOnTimeFlights$ARR_TIMESTAMP, DEP_TIMESTAMP = allOnTimeFlights$DEP_TIMESTAMP, ORIGIN_AIRPORT = allOnTimeFlights$ORIGIN_AIRPORT, ORIGIN_STATE_NAME = allOnTimeFlights$ORIGIN_CITY_NAME, DEST_AIRPORT = allOnTimeFlights$DEST_AIRPORT, DEST_STATE_NAME = allOnTimeFlights$DEST_CITY_NAME, AIR_TIME = round(allOnTimeFlights$AIR_TIME / 60.0, 2), DISTANCE = allOnTimeFlights$DISTANCE)
+  allFlightsMap$ORIGIN_STATE_NAME <- substrRight(as.character(allFlightsMap$ORIGIN_STATE_NAME), 2)
+  allFlightsMap$DEST_STATE_NAME <- substrRight(as.character(allFlightsMap$DEST_STATE_NAME), 2)
+  
+  #ohare
+  ohareArrMap <- filter(allFlightsMap, DEST_AIRPORT == "Chicago O'Hare International")
+  ohareDepMap <- filter(allFlightsMap, ORIGIN_AIRPORT == "Chicago O'Hare International")
+  
+
+  
+  
+  #midway
+  midwayArrMap <- filter(allFlightsMap, DEST_AIRPORT == "Chicago Midway International")
+  midwayDepMap <- filter(allFlightsMap, ORIGIN_AIRPORT == "Chicago Midway International")
+  
+ 
+  
+  
+  
+ 
+  
+
+  
   # Day
   
-   statesData <-
-     read.csv(file = 'data/statesData.csv',
-              header = TRUE)
+   # statesData <-
+   #   read.csv(file = 'data/statesData.csv',
+   #            header = TRUE)
    
   states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
    
-  statesWData <- sp::merge(states, statesData, by = "NAME")
+  # statesWData <- sp::merge(states, statesData, by = "NAME")
   
   output$leafDay1 <- renderLeaflet({ 
     
-    # # try CartoDB.Positron
-     m <- leaflet(statesWData) %>%
-       setView(-96, 37.8, 4) %>%
-       addProviderTiles(providers$Stamen.TonerLite,
-                        options = providerTileOptions(noWrap = TRUE))
-     
-     bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-     pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
-     
-     labels <- sprintf(
-       "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-       statesWData$NAME, statesWData$value
-     ) %>% lapply(htmltools::HTML)
+    # Ohare Arrivals
+    # min = , max = 
     
-     m <- m %>% addPolygons(
-       fillColor = ~pal(statesWData$value),
-       weight = 2,
-       opacity = 1,
-       color = "black",
-       dashArray = "3",
-       fillOpacity = 0.7,
-       highlight = highlightOptions(
-         weight = 5,
-         color = "#666",
-         dashArray = "",
-         fillOpacity = 0.7,
-         bringToFront = TRUE),
-       label = labels,
-       labelOptions = labelOptions(
-         style = list("font-weight" = "normal", padding = "3px 8px"),
-         textsize = "15px",
-         direction = "auto")) %>%
-       leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
-                                            position = "bottomright") %>% syncWith("maps")
+    # filter dates here before moving on
+    
+    dayToFilter <- getDate()
+    
+    #ohareArrMap <- filter(ohareArrMap, month(ymd(FL_DATE)) == month(mdy(dayToFilter)) & day(ymd(FL_DATE)) == day(mdy(dayToFilter)))
+    ohareArrMap <- filter(ohareArrMap, ymd(FL_DATE) == mdy(dayToFilter))
+    
+    
+    # filter distance and airtime here if want full resolution data
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    ohareArrMap <- ohareArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    ohareArrMapUnique <- ohareArrMap[!duplicated(ohareArrMap$ORIGIN_STATE_NAME), ]
+    colnames(ohareArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareArrMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 15, 30, 45, 60, 75, 90, 105, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
+                         position = "bottomright") %>% syncWith("maps")
     
   })
   
   output$leafDay2 <- renderLeaflet({
+    # Midway Arrivals
+    # min = 43, max = 7571
+    
+    # filter dates here before moving on
+    
+    dayToFilter <- getDate()
+    
+    midwayArrMap <- filter(midwayArrMap, ymd(FL_DATE) == mdy(dayToFilter))
+    
+
+    # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    midwayArrMap <- midwayArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    midwayArrMapUnique <- midwayArrMap[!duplicated(midwayArrMap$ORIGIN_STATE_NAME), ]
+    colnames(midwayArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayArrMapUnique$n)
+    
+    
+    
     # # try CartoDB.Positron
-    m <- leaflet(statesWData) %>%
+    m <- leaflet(statesWDataMerge) %>%
       setView(-96, 37.8, 4) %>%
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE))
     
-    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    bins <- c(0, 15, 30, 45, 60, 75, 90, 105, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
     
     labels <- sprintf(
-      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-      statesWData$NAME, statesWData$value
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
     ) %>% lapply(htmltools::HTML)
-
+    
     m <- m %>% addPolygons(
-      fillColor = ~pal(statesWData$value),
+      fillColor = ~pal(statesWDataMerge$n),
       weight = 2,
       opacity = 1,
       color = "black",
@@ -190,27 +275,56 @@ server <- function(input, output) {
         style = list("font-weight" = "normal", padding = "3px 8px"),
         textsize = "15px",
         direction = "auto")) %>%
-      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
                          position = "bottomright") %>% syncWith("maps")
   })
   
   output$leafDay3 <- renderLeaflet({
+    # Ohare Departures
+    # min = 34, max = 24382
+    
+    # filter dates here before moving on
+    
+    dayToFilter <- getDate()
+    
+    ohareDepMap <- filter(ohareDepMap, ymd(FL_DATE) == mdy(dayToFilter))
+    
+    
+    # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    
+    ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    
+    ohareDepMapUnique <- ohareDepMap[!duplicated(ohareDepMap$DEST_STATE_NAME), ]
+    colnames(ohareDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareDepMapUnique$n)
+    
+    
+    
     # # try CartoDB.Positron
-    m <- leaflet(statesWData) %>%
+    m <- leaflet(statesWDataMerge) %>%
       setView(-96, 37.8, 4) %>%
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE))
     
-    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    bins <- c(0, 15, 30, 45, 60, 75, 90, 105, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
     
     labels <- sprintf(
-      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-      statesWData$NAME, statesWData$value
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
     ) %>% lapply(htmltools::HTML)
-
+    
     m <- m %>% addPolygons(
-      fillColor = ~pal(statesWData$value),
+      fillColor = ~pal(statesWDataMerge$n),
       weight = 2,
       opacity = 1,
       color = "black",
@@ -227,27 +341,57 @@ server <- function(input, output) {
         style = list("font-weight" = "normal", padding = "3px 8px"),
         textsize = "15px",
         direction = "auto")) %>%
-      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
                          position = "bottomright") %>% syncWith("maps")
   })
   
   output$leafDay4 <- renderLeaflet({
+   
+    # Midway Departures
+    # min = 43, max = 7577
+    
+    # filter dates here before moving on
+    
+    dayToFilter <- getDate()
+    
+    midwayDepMap <- filter(midwayDepMap, ymd(FL_DATE) == mdy(dayToFilter))
+    
+    # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    
+    
+    
+    midwayDepMap <- midwayDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    midwayDepMapUnique <- midwayDepMap[!duplicated(midwayDepMap$DEST_STATE_NAME), ]
+    colnames(midwayDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayDepMapUnique$n)
+    
+    
+    
     # # try CartoDB.Positron
-    m <- leaflet(statesWData) %>%
+    m <- leaflet(statesWDataMerge) %>%
       setView(-96, 37.8, 4) %>%
       addProviderTiles(providers$Stamen.TonerLite,
                        options = providerTileOptions(noWrap = TRUE))
     
-    bins <- c(0, 3, 6, 9, 12, 15, 18, 21, Inf)
-    pal <- colorBin("YlOrRd", domain = statesWData$value, bins = bins)
+    bins <- c(0, 15, 30, 45, 60, 75, 90, 105, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
     
     labels <- sprintf(
-      "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
-      statesWData$NAME, statesWData$value
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
     ) %>% lapply(htmltools::HTML)
-
+    
     m <- m %>% addPolygons(
-      fillColor = ~pal(statesWData$value),
+      fillColor = ~pal(statesWDataMerge$n),
       weight = 2,
       opacity = 1,
       color = "black",
@@ -264,19 +408,329 @@ server <- function(input, output) {
         style = list("font-weight" = "normal", padding = "3px 8px"),
         textsize = "15px",
         direction = "auto")) %>%
-      leaflet::addLegend(pal = pal, values = ~value, opacity = 0.7, title = NULL,
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
+                         position = "bottomright") %>% syncWith("maps")
+    
+  })
+  
+  output$leafMonth1 <- renderLeaflet({
+    
+    # Ohare Arrivals
+    # min = 34, max = 24477
+    
+    # filter dates here before moving on
+    
+    ohareArrMap <- filter(ohareArrMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
+    
+    
+    # filter distance and airtime here if want full resolution data
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    ohareArrMap <- ohareArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    ohareArrMapUnique <- ohareArrMap[!duplicated(ohareArrMap$ORIGIN_STATE_NAME), ]
+    colnames(ohareArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareArrMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 400, 800, 1200, 1600, 2000, 2400, 2800, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    
+  })
+  
+  output$leafMonth2 <- renderLeaflet({
+    
+    # Midway Arrivals
+    # min = 43, max = 7571
+    
+    # filter dates here before moving on
+    
+    midwayArrMap <- filter(midwayArrMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
+    
+    # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    midwayArrMap <- midwayArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    midwayArrMapUnique <- midwayArrMap[!duplicated(midwayArrMap$ORIGIN_STATE_NAME), ]
+    colnames(midwayArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayArrMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 400, 800, 1200, 1600, 2000, 2400, 2800, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
                          position = "bottomright") %>% syncWith("maps")
   })
   
-  output$leafMonth1 <- renderLeaflet({ })
+  output$leafMonth3 <- renderLeaflet({ 
+    # Ohare Departures
+    # min = 34, max = 24382
+    
+    # filter dates here before moving on
+    
+    ohareDepMap <- filter(ohareDepMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
+    
+    # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    
+    ohareDepMapUnique <- ohareDepMap[!duplicated(ohareDepMap$DEST_STATE_NAME), ]
+    colnames(ohareDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareDepMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 400, 800, 1200, 1600, 2000, 2400, 2800, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    
+    })
   
-  output$leafMonth2 <- renderLeaflet({ })
-  
-  output$leafMonth3 <- renderLeaflet({ })
-  
-  output$leafMonth4 <- renderLeaflet({ })
+  output$leafMonth4 <- renderLeaflet({ 
+    
+    # Midway Departures
+    # min = 43, max = 7577
+    
+    # filter dates here before moving on
+    
+    midwayDepMap <- filter(midwayDepMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
+    
+    # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    midwayDepMap <- midwayDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    midwayDepMapUnique <- midwayDepMap[!duplicated(midwayDepMap$DEST_STATE_NAME), ]
+    colnames(midwayDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayDepMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 400, 800, 1200, 1600, 2000, 2400, 2800, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    })
   
   output$leafYear1 <- renderLeaflet({
+    
+    # Ohare Arrivals
+    # min = 34, max = 24477
+    
+    # filter dates here before moving on
+    # filter distance and airtime here if want full resolution data
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    
+    ohareArrMap <- ohareArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    ohareArrMapUnique <- ohareArrMap[!duplicated(ohareArrMap$ORIGIN_STATE_NAME), ]
+    colnames(ohareArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareArrMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3000, 6000, 9000, 12000, 15000, 18000, 21000, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    
+    
     
     # allStatesArrivals <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
     #   separate(ORIGIN_CITY_NAME, c("ORIGIN_CITY", "ORIGIN_STATE"), sep = ",")
@@ -323,11 +777,190 @@ server <- function(input, output) {
     #                      position = "bottomright") %>% syncWith("maps")
     })
   
-  output$leafYear2 <- renderLeaflet({ })
+  output$leafYear2 <- renderLeaflet({ 
+    
+    
+    # Midway Arrivals
+    # min = 43, max = 7571
+    
+    # filter dates here before moving on
+    # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    midwayArrMap <- midwayArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
+    
+    
+    midwayArrMapUnique <- midwayArrMap[!duplicated(midwayArrMap$ORIGIN_STATE_NAME), ]
+    colnames(midwayArrMapUnique)[5] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayArrMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayArrMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3000, 6000, 9000, 12000, 15000, 18000, 21000, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    
+    })
   
-  output$leafYear3 <- renderLeaflet({ })
+  output$leafYear3 <- renderLeaflet({
+    
+    # Ohare Departures
+    # min = 34, max = 24382
+    
+    # filter dates here before moving on
+    # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    
+    ohareDepMapUnique <- ohareDepMap[!duplicated(ohareDepMap$DEST_STATE_NAME), ]
+    colnames(ohareDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, ohareDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(ohareDepMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3000, 6000, 9000, 12000, 15000, 18000, 21000, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "O\'Hare",
+                         position = "bottomright") %>% syncWith("maps")
+    
+  })
   
-  output$leafYear4 <- renderLeaflet({ })
+  output$leafYear4 <- renderLeaflet({ 
+    
+    # Midway Departures
+    # min = 43, max = 7577
+    
+    # filter dates here before moving on
+    # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
+    midwayDepMap <- midwayDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
+    
+    midwayDepMapUnique <- midwayDepMap[!duplicated(midwayDepMap$DEST_STATE_NAME), ]
+    colnames(midwayDepMapUnique)[7] <- "STUSPS"
+    
+    statesWDataMerge <- sp::merge(states, midwayDepMapUnique, by = "STUSPS")
+    
+    totalFlights <- sum(midwayDepMapUnique$n)
+    
+    
+    
+    # # try CartoDB.Positron
+    m <- leaflet(statesWDataMerge) %>%
+      setView(-96, 37.8, 4) %>%
+      addProviderTiles(providers$Stamen.TonerLite,
+                       options = providerTileOptions(noWrap = TRUE))
+    
+    bins <- c(0, 3000, 6000, 9000, 12000, 15000, 18000, 21000, Inf)
+    pal <- colorBin("YlOrRd", domain = statesWDataMerge$n, bins = bins)
+    
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%g flights<br/>%g percent",
+      statesWDataMerge$NAME, statesWDataMerge$n, round((statesWDataMerge$n / totalFlights * 100), digits = 2)
+    ) %>% lapply(htmltools::HTML)
+    
+    m <- m %>% addPolygons(
+      fillColor = ~pal(statesWDataMerge$n),
+      weight = 2,
+      opacity = 1,
+      color = "black",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = 0.7,
+        bringToFront = TRUE),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", padding = "3px 8px"),
+        textsize = "15px",
+        direction = "auto")) %>%
+      leaflet::addLegend(pal = pal, values = ~n, opacity = 0.7, title = "Midway",
+                         position = "bottomright") %>% syncWith("maps")
+    
+    
+    })
   
 
   ######
