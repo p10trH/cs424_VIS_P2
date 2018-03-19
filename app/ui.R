@@ -681,10 +681,10 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp35")),
+                                                                  plotOutput("Ohare1WeekdayHourlyArrDep")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp36"))
+                                                                  plotOutput("Midway1WeekdayHourlyArrDep"))
                                                          )))
                                             ),
                                             fluidRow(
