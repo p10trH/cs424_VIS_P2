@@ -101,7 +101,7 @@ ui <- fluidPage(
   
   # Selectize input
   
-  tags$style(type='text/css', ".selectize-input {background: #DDDDDD !important;} .selectize-dropdown {}"),
+  tags$style(type='text/css', ".selectize-input {background: #DDDDDD !important; font-size:24px; width:100%;} .selectize-dropdown {font-size:24px;width:100%;}"),
   
   # Slider input
   
@@ -125,13 +125,13 @@ ui <- fluidPage(
   # Modal windows
   
   tags$style(type='text/css', "#modal_Settings .modal-footer, #modal_About .modal-footer {display:none;}"),
-  tags$style(type='text/css', "#modal_Settings, #modal_About {font-size:20px;}"),
+  tags$style(type='text/css', "#modal_Settings, #modal_About {font-size:25px;}"),
   
   # Top title and buttons
   
   tags$style(type='text/css', "#action_Settings, #action_About {padding: 10px 10px 10px 10px; margin-top: 23px;}"),
   tags$style(type='text/css', "h1 {font-size: 60px; font-weight: bold; color: #484747;}"),
-  tags$style(type='text/css', "h2 {font-size: 30px; font-weight: bold;  }"),
+  tags$style(type='text/css', "h2 {font-size: 35px; font-weight: bold;  }"),
   
   
   # App title & buttons  ---------------------------
@@ -194,8 +194,8 @@ ui <- fluidPage(
                                                 #          )),
                                                 tabPanel("", icon = icon("line-chart", "fa-2x"),
                                                          fluidRow(
-                                                           column(8, align = 'left',
-                                                                  selectInput("Airport",label=NULL, 
+                                                           column(6, align = 'left',
+                                                                  selectInput("Airport",label=NULL, width = "100%",
                                                                               choices = top50Airports$ORIGIN_AIRPORT, selected = "LaGuardia"))),
                                                          fluidRow(
                                                            column(12,
@@ -228,7 +228,7 @@ ui <- fluidPage(
                                                 #                   DTOutput("tmp22"))
                                                 #          )),
                                                 tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
-                                                         fluidRow(box(selectInput("Delays", "Delay", c("All", "NAS", "Weather", "Security", "Late Aircraft", "Carrier")))),
+                                                         fluidRow(column(6,selectInput("Delays", label = NULL,width = "100%", c("All", "NAS", "Weather", "Security", "Late Aircraft", "Carrier")))),
                                                          fluidRow(
                                                            column(6,
                                                                   tags$style(type = "text/css", "#OhareDelays1YearAll {min-height:35vh !important;}"),
@@ -941,8 +941,8 @@ ui <- fluidPage(
                                                          ),
                                                 tabPanel("a2", icon = icon("line-chart", "fa-2x"), 
                                                          
-                                                         fluidRow(column(8, offset = 0, align = 'left',
-                                                                         selectInput("Airline", label = NULL, 
+                                                         fluidRow(column(6, offset = 0, align = 'left',
+                                                                         selectInput("Airline", label = NULL, width = "100%",
                                                                                      choices = c("Aces Airlines", "Alaska Airlines Inc.", "American Airlines Inc.", 
                                                                                                  'Atlantic Southeast Airlines', "Delta Air Lines Inc.", 
                                                                                                  "Frontier Airlines Inc.", "JetBlue Airways", "SkyWest Airlines Inc.", 
@@ -1107,7 +1107,7 @@ ui <- fluidPage(
   bsModal(id = "modal_Settings", h2("Settings"), trigger = "action_Settings", size = "small",
           h2("Time"), 
           fluidRow(column(11, offset = 1, checkboxInput("HourFormat", label = "24h format", value = FALSE)))),
-  bsModal(id = "modal_About", "About", trigger = "action_About", size = "large",
+  bsModal(id = "modal_About", h2("About"), trigger = "action_About", size = "large",
           #h4("By Peter Hanula, Dimitar Kirilov, Tarush Vig"),
           h3("Project 2 - CS 424", align = "center"),
           h3("Learning to Fly", align = "center"),
