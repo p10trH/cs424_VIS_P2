@@ -113,7 +113,7 @@ server <- function(input, output) {
   }
   
   
-  allFlightsMap <- data.frame(FL_DATE = allOnTimeFlights$FL_DATE, ARR_TIMESTAMP = allOnTimeFlights$ARR_TIMESTAMP, DEP_TIMESTAMP = allOnTimeFlights$DEP_TIMESTAMP, ORIGIN_AIRPORT = allOnTimeFlights$ORIGIN_AIRPORT, ORIGIN_STATE_NAME = allOnTimeFlights$ORIGIN_CITY_NAME, DEST_AIRPORT = allOnTimeFlights$DEST_AIRPORT, DEST_STATE_NAME = allOnTimeFlights$DEST_CITY_NAME, AIR_TIME = allOnTimeFlights$AIR_TIME, DISTANCE = allOnTimeFlights$DISTANCE)
+  allFlightsMap <- data.frame(FL_DATE = allOnTimeFlights$FL_DATE, ARR_TIMESTAMP = allOnTimeFlights$ARR_TIMESTAMP, DEP_TIMESTAMP = allOnTimeFlights$DEP_TIMESTAMP, ORIGIN_AIRPORT = allOnTimeFlights$ORIGIN_AIRPORT, ORIGIN_STATE_NAME = allOnTimeFlights$ORIGIN_CITY_NAME, DEST_AIRPORT = allOnTimeFlights$DEST_AIRPORT, DEST_STATE_NAME = allOnTimeFlights$DEST_CITY_NAME, AIR_TIME = round(allOnTimeFlights$AIR_TIME / 60.0, 2), DISTANCE = allOnTimeFlights$DISTANCE)
   allFlightsMap$ORIGIN_STATE_NAME <- substrRight(as.character(allFlightsMap$ORIGIN_STATE_NAME), 2)
   allFlightsMap$DEST_STATE_NAME <- substrRight(as.character(allFlightsMap$DEST_STATE_NAME), 2)
   
@@ -138,13 +138,13 @@ server <- function(input, output) {
   
   # Day
   
-   statesData <-
-     read.csv(file = 'data/statesData.csv',
-              header = TRUE)
+   # statesData <-
+   #   read.csv(file = 'data/statesData.csv',
+   #            header = TRUE)
    
   states <- geojsonio::geojson_read("data/states.geojson", what = "sp")
    
-  statesWData <- sp::merge(states, statesData, by = "NAME")
+  # statesWData <- sp::merge(states, statesData, by = "NAME")
   
   output$leafDay1 <- renderLeaflet({ 
     
@@ -160,7 +160,8 @@ server <- function(input, output) {
     
     
     # filter distance and airtime here if want full resolution data
-    
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
     
     
     
@@ -225,6 +226,8 @@ server <- function(input, output) {
     
 
     # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
     
     
     
@@ -288,6 +291,11 @@ server <- function(input, output) {
     
     
     # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
     
     ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
     
@@ -349,6 +357,11 @@ server <- function(input, output) {
     midwayDepMap <- filter(midwayDepMap, ymd(FL_DATE) == mdy(dayToFilter))
     
     # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
     
     
     
@@ -411,6 +424,10 @@ server <- function(input, output) {
     
     
     # filter distance and airtime here if want full resolution data
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     ohareArrMap <- ohareArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
     
@@ -472,6 +489,10 @@ server <- function(input, output) {
     midwayArrMap <- filter(midwayArrMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
     
     # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     midwayArrMap <- midwayArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
     
@@ -530,6 +551,10 @@ server <- function(input, output) {
     ohareDepMap <- filter(ohareDepMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
     
     # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
     
@@ -591,6 +616,10 @@ server <- function(input, output) {
     midwayDepMap <- filter(midwayDepMap, month(ymd(FL_DATE)) == as.numeric(substr(input$slider_month, 2, 3)))
     
     # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     midwayDepMap <- midwayDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
     
@@ -647,6 +676,11 @@ server <- function(input, output) {
     
     # filter dates here before moving on
     # filter distance and airtime here if want full resolution data
+    ohareArrMap <- filter(ohareArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareArrMap <- filter(ohareArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
+    
     
     ohareArrMap <- ohareArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
     
@@ -751,6 +785,10 @@ server <- function(input, output) {
     
     # filter dates here before moving on
     # filter distance and airtime here if want full resolution data
+    midwayArrMap <- filter(midwayArrMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayArrMap <- filter(midwayArrMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     midwayArrMap <- midwayArrMap %>% add_count(ORIGIN_STATE_NAME) # Ready for table output, after this step resolution lost
     
@@ -809,6 +847,10 @@ server <- function(input, output) {
     
     # filter dates here before moving on
     # filter distance and airtime here if want full resolution data
+    ohareDepMap <- filter(ohareDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    ohareDepMap <- filter(ohareDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     ohareDepMap <- ohareDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
     
@@ -866,6 +908,10 @@ server <- function(input, output) {
     
     # filter dates here before moving on
     # filter distance and airtime here if want full resolution data
+    midwayDepMap <- filter(midwayDepMap, DISTANCE >= input$slider_Distance[1] & DISTANCE <= input$slider_Distance[2])
+    midwayDepMap <- filter(midwayDepMap, AIR_TIME >= input$slider_AirTime[1] & AIR_TIME <= input$slider_AirTime[2])
+    
+    
     
     midwayDepMap <- midwayDepMap %>% add_count(DEST_STATE_NAME) # Ready for table output
     
