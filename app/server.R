@@ -1596,92 +1596,145 @@ server <- function(input, output) {
     
     
     # B4: Total # Delays (Monthly)
-    output$Ohare1YearDelays <- renderStreamgraph({
-      
-      # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
-      #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
-      #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
-      #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
-      #   group_by(month(FL_DATE)) %>%
-      #   summarise_each(funs(sum)) %>%
-      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
-      # 
-      # delays$FL_DATE <- NULL
-      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
-      # 
-      # delaysMelt <- melt(delays, id.vars = "Month")
-      # 
-      # ggplot(data = delaysMelt, aes(x = Month,
-      #                               y = value,
-      #                               group = variable,
-      #                               color = variable)) +
-      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
-      #   geom_point() +
-      #   geom_line(size = 1.5, alpha = 0.7)
-      
-      # OR
+    output$Ohare1YearDelays <- renderPlotly({
       
       delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
         select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
         filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
         mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
         group_by(month(FL_DATE)) %>%
-        summarise_each(funs(sum))
-      
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+
       delays$FL_DATE <- NULL
-      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
-      
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+
       delaysMelt <- melt(delays, id.vars = "Month")
+
+      if (input$checkbox_scale)
+      {
+        delays2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+          select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+          group_by(month(FL_DATE)) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        delays2$FL_DATE <- NULL
+        colnames(delays2) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        delaysMelt2 <- melt(delays2, id.vars = "Month")
+        
+        maxY <- max(delaysMelt$value, delaysMelt2$value)
+      }
+      else
+      {
+        maxY <- max(delaysMelt$value)
+      }
       
-      delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+      ggplotly(ggplot(data = delaysMelt, aes(x = Month,
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) +
+        labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7) + 
+        scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
+        ylim(0, maxY))  %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
+        
       
-      streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
-        sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
-        sg_legend(show = TRUE, label = "variable")
-    })
-    
-    output$Midway1YearDelays <- renderStreamgraph({
+      # OR
       
       # delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
       #   select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
       #   filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
       #   mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
       #   group_by(month(FL_DATE)) %>%
-      #   summarise_each(funs(sum)) %>%
-      #   mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+      #   summarise_each(funs(sum))
       # 
       # delays$FL_DATE <- NULL
-      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      # colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
       # 
       # delaysMelt <- melt(delays, id.vars = "Month")
       # 
-      # ggplot(data = delaysMelt, aes(x = Month,
-      #                               y = value,
-      #                               group = variable,
-      #                               color = variable)) +
-      #   labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
-      #   geom_point() +
-      #   geom_line(size = 1.5, alpha = 0.7)
-      
-      # OR
+      # delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+      # 
+      # streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
+      #   sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
+      #   sg_legend(show = TRUE, label = "variable")
+    })
+    
+    output$Midway1YearDelays <- renderPlotly({
       
       delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
         select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
         filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
         mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
         group_by(month(FL_DATE)) %>%
-        summarise_each(funs(sum))
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
       
       delays$FL_DATE <- NULL
-      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+      colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
       
       delaysMelt <- melt(delays, id.vars = "Month")
       
-      delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+      if (input$checkbox_scale)
+      {
+        delays2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+          select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+          filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+          mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+          group_by(month(FL_DATE)) %>%
+          summarise_each(funs(sum)) %>%
+          mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        
+        delays2$FL_DATE <- NULL
+        colnames(delays2) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+        
+        delaysMelt2 <- melt(delays2, id.vars = "Month")
+        
+        maxY <- max(delaysMelt$value, delaysMelt2$value)
+      }
+      else
+      {
+        maxY <- max(delaysMelt$value)
+      }
       
-      streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
-        sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
-        sg_legend(show = TRUE, label = "variable")
+      ggplotly(ggplot(data = delaysMelt, aes(x = Month,
+                                    y = value,
+                                    group = variable,
+                                    color = variable)) +
+        labs(title = "Midway Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        geom_point() +
+        geom_line(size = 1.5, alpha = 0.7) + 
+        scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
+        ylim(0, maxY)) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
+      
+      # OR
+      
+    #   delays <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+    #     select(FL_DATE, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+    #     filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+    #     mutate_each(funs(replace(., . > 0, 1)), -FL_DATE) %>%
+    #     group_by(month(FL_DATE)) %>%
+    #     summarise_each(funs(sum))
+    #   
+    #   delays$FL_DATE <- NULL
+    #   colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
+    #   
+    #   delaysMelt <- melt(delays, id.vars = "Month")
+    #   
+    #   delaysMelt$Month <- as.POSIXct(sprintf("2017 %d 1", delaysMelt$Month), format = "%Y %m %d")
+    #   
+    #   streamgraph(delaysMelt, key="variable", value="value", date="Month") %>% 
+    #     sg_axis_x(tick_interval = 1, tick_units = "month", tick_format = "%m") %>%
+    #     sg_legend(show = TRUE, label = "variable")
     })
     
     
