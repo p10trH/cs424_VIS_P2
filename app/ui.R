@@ -20,7 +20,7 @@ ui <- fluidPage(
   
   tags$style(HTML("
 
-    .tabbable > .nav > li                     {font-size: 22px; font-weight: bold;}
+    .tabbable > .nav > li                     {font-size: 24px; font-weight: bold;}
 
     .tabbable > .nav[id=mainNav] > li                     {font-size: 24px;}
     .tabbable > .nav[id=mainNav] > li > a                 {color: #CFCFCF; border-radius: 4px; border: 0px;}
@@ -74,19 +74,21 @@ ui <- fluidPage(
     .tabbable > .nav[id=c5tabs2] > li > a               {color: #CFCFCF; border-radius: 4px; border: 0px; border-bottom: 4px solid #AAAAAA;}
     .tabbable > .nav[id=c5tabs2] > li[class=active] > a {background-color: #AAAAAA; color: white; border: 0px; border-bottom: 4px solid #484747; }
     .tabbable > .nav[id=c5tabs2] > li > a:hover         {background-color: #AAAAAA; border: 0px; border-bottom: 4px solid #484747;}
-            
-
 
     .tabbable > .nav > li > a                             {color: #CFCFCF; border-radius: 4px;}
     .tabbable > .nav > li[class=active] > a               {background-color: #484747; color: white;}
     .tabbable > .nav > li > a:hover                       {background-color: #484747;}
+
+  
+
+    .nav-tabs-custom > .nav > li                     {font-size: 26px;}
                   
     .nav-tabs-custom > .nav > li > a                      {color: #666666; border-radius: 4px; margin: 0px; padding: 10px;}
     .nav-tabs-custom > .nav > li[class=active] > a        {background-color: #DDDDDD; color: #484747; border: 0px; margin: 1px;}
     .nav-tabs-custom > .nav > li > a:hover                {background-color: #DDDDDD; border: 0px solid #DDDDDD; margin: 1px;}
 
     .nav-tabs-custom > .nav > li                          {float: right;}
-    .pull-right                                           {float: left !important; font-size: 24px;}
+    .pull-right                                           {float: left !important; font-size: 26px;}
     .nav-tabs-custom > .nav                               {border-bottom: 0px;}")),
   
   tags$style(type='text/css', ".nav-tabs-custom {padding: 20px; margin-bottom: 20px; background-color: #AAAAAA; color: #484747; border-radius: 4px;}"),
@@ -105,8 +107,8 @@ ui <- fluidPage(
   
   tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}
                                  .irs-grid-pol {height: 15px; width: 5px; top: 17px; background: #666666;}"),
-  tags$style(type = "text/css", ".irs-grid-text {font-size: 15px; color: white; z-index: 0; bottom: -20px;}
-                                 .irs-single {font-size: 18px; color: white; background: #484747; top: 63px; z-index:1; padding-left: 5px; padding-right: 5px;}
+  tags$style(type = "text/css", ".irs-grid-text {font-size: 18px; color: white; z-index: 0; bottom: -20px;}
+                                 .irs-single {font-size: 24px; color: white; background: #484747; top: 63px; z-index:1; padding-left: 5px; padding-right: 5px;}
                                  .irs-slider {background: #666666; width: 30px; height: 45px; top: 15px; border-radius: 4px;}
                                  .irs-slider:hover {background: #666666; width: 30px; height: 45px; top: 15px; border-radius: 4px;}
                                  .irs-bar {width: 100%; height: 25px; background: #484747; border-top: 1px solid #484747; border-bottom: 1px solid #484747;}
@@ -114,7 +116,7 @@ ui <- fluidPage(
                                  .irs-line {background: #CFCFCF; border: 1px solid #CFCFCF; height: 25px; border-radius: 4px;}"),
   
   tags$style(type = "text/css", ".irs-min, .irs-max {display: none;}
-                                 .irs-to, .irs-from {font-size: 18px; color: white; background: #484747; top: -15px;}"),
+                                 .irs-to, .irs-from {font-size: 24px; color: white; background: #484747; top: -15px;}"),
   
   
   
@@ -123,11 +125,13 @@ ui <- fluidPage(
   # Modal windows
   
   tags$style(type='text/css', "#modal_Settings .modal-footer, #modal_About .modal-footer {display:none;}"),
+  tags$style(type='text/css', "#modal_Settings, #modal_About {font-size:20px;}"),
   
   # Top title and buttons
   
   tags$style(type='text/css', "#action_Settings, #action_About {padding: 10px 10px 10px 10px; margin-top: 23px;}"),
   tags$style(type='text/css', "h1 {font-size: 60px; font-weight: bold; color: #484747;}"),
+  tags$style(type='text/css', "h2 {font-size: 30px; font-weight: bold;  }"),
   
   
   # App title & buttons  ---------------------------
@@ -951,20 +955,20 @@ ui <- fluidPage(
                                                                               fluidRow(
                                                                                 column(6,
                                                                                        #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                                       plotOutput("Ohare1YearAirlineHourlyArrivals")), #, height = "80vh"
+                                                                                       plotlyOutput("Ohare1YearAirlineHourlyArrivals")), #, height = "80vh"
                                                                                 column(6,
                                                                                        #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                                       plotOutput("Midway1YearAirlineHourlyArrivals"))
+                                                                                       plotlyOutput("Midway1YearAirlineHourlyArrivals"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Departures", 
                                                                               fluidRow(
                                                                                 column(6,
                                                                                        #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                                       plotOutput("Ohare1YearAirlineHourlyDepartures")),
+                                                                                       plotlyOutput("Ohare1YearAirlineHourlyDepartures")),
                                                                                 column(6,
                                                                                        #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                                       plotOutput("Midway1YearAirlineHourlyDepartures"))
+                                                                                       plotlyOutput("Midway1YearAirlineHourlyDepartures"))
                                                                               )
                                                                      )
                                                          )
@@ -1080,7 +1084,7 @@ ui <- fluidPage(
                                             )
                       ),
   
-              fluidRow(column(1,offset = 5, h3("Distance:"), align='right'), 
+              fluidRow(column(1,offset = 6, h3("Distance:"), align='right'), 
                        column(2, offset=0, sliderInput("slider_Distance", label = NULL, width = "100%", post = "mi.", step = 1,
                                     min = 65, max = 4250, value = c(65, 4250))),
                        column(1,offset = 0, h3("Air Time:"), align='right'), 
@@ -1100,9 +1104,9 @@ ui <- fluidPage(
   
   #  ---------------------------
   
-  bsModal(id = "modal_Settings", "Settings", trigger = "action_Settings", size = "small",
-          h3("Time"), 
-          fluidRow(column(6, offset = 1, checkboxInput("HourFormat", label = "24h format", value = FALSE)))),
+  bsModal(id = "modal_Settings", h2("Settings"), trigger = "action_Settings", size = "small",
+          h2("Time"), 
+          fluidRow(column(11, offset = 1, checkboxInput("HourFormat", label = "24h format", value = FALSE)))),
   bsModal(id = "modal_About", "About", trigger = "action_About", size = "large",
           #h4("By Peter Hanula, Dimitar Kirilov, Tarush Vig"),
           h3("Project 2 - CS 424", align = "center"),
