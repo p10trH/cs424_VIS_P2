@@ -629,11 +629,11 @@ server <- function(input, output) {
           summarise(freq = n()) %>%
           na.omit()
         
-        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq, delays$Total)
       }
       else
       {
-        maxY <- max(arrivals$Arrivals, departures$Departures)
+        maxY <- max(arrivals$Arrivals, departures$Departures, delays$Total)
       }
       
       # Plot
@@ -717,11 +717,11 @@ server <- function(input, output) {
           summarise(freq = n()) %>%
           na.omit()
         
-        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq)
+        maxY <- max(arrivals$Arrivals, arrivals2$freq, departures$Departures, departures2$freq, delays$Total)
       }
       else
       {
-        maxY <- max(arrivals$Arrivals, departures$Departures)
+        maxY <- max(arrivals$Arrivals, departures$Departures, delays$Total)
       }
       
       # Plot
@@ -770,12 +770,12 @@ server <- function(input, output) {
       # Common Scale
       if (input$checkbox_scale)
       {
-        arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International") %>%
           group_by(weekdays(FL_DATE)) %>%
           summarise(freq = n()) %>%
           na.omit()
         
-        departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago Midway International") %>%
           group_by(weekdays(FL_DATE)) %>%
           summarise(freq = n()) %>%
           na.omit()
@@ -831,12 +831,12 @@ server <- function(input, output) {
       # Common Scale
       if (input$checkbox_scale)
       {
-        arrivals <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
+        arrivals2 <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International") %>%
           group_by(weekdays(FL_DATE)) %>%
           summarise(freq = n()) %>%
           na.omit()
         
-        departures <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        departures2 <- oneMonth %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
           group_by(weekdays(FL_DATE)) %>%
           summarise(freq = n()) %>%
           na.omit()
@@ -1166,7 +1166,7 @@ server <- function(input, output) {
     
     # B====
     
-    # B1: Total # Departures/Arrivals per Airline (MOnthly)
+    # B1: Total # Departures/Arrivals per Airline (Monthly)
     output$Ohare1YearAirlinesArrivals <- renderPlotly({
       
       arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
