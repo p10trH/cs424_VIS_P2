@@ -742,60 +742,12 @@ ui <- fluidPage(
   
                                    tabPanel("Year", 
                                             br(), 
-
-                                            fluidRow(
-                                              tabBox(
-                                                title = "b1 (a2 is the same info)",
-                                                side = "left",
-                                                width = 12,
-                                                # tabPanel("", icon = icon("table", "fa-2x"), br(),
-                                                #          fluidRow(
-                                                #            column(3,
-                                                #                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                #                   DTOutput("Ohare1YearAirlinesArrivalsTable")),
-                                                #            column(3,
-                                                #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                #                   DTOutput("Ohare1YearAirlinesDeparturesTable")),
-                                                #            column(3,
-                                                #                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                #                   DTOutput("Midway1YearAirlinesArrivalsTable")),
-                                                #            column(3,
-                                                #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                #                   DTOutput("Midway1YearAirlinesDeparturesTable"))
-                                                #          )),
-                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
-                                                         
-                                                         tabsetPanel(id = "b1Tabs",
-                                                                     tabPanel("Arrivals", 
-                                                                              fluidRow(
-                                                                                column(6,
-                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                                       plotlyOutput("Ohare1YearAirlinesArrivals")), #, height = "80vh"
-                                                                                column(6,
-                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                                       plotlyOutput("Midway1YearAirlinesArrivals"))
-                                                                              )
-                                                                     ),
-                                                                     tabPanel("Departures", 
-                                                                              fluidRow(
-                                                                                column(6,
-                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                                       plotlyOutput("Ohare1YearAirlinesDepartures")),
-                                                                                column(6,
-                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                                       plotlyOutput("Midway1YearAirlinesDepartures"))
-                                                                              )
-                                                                     )
-                                                         )
-                                                         
-                                                 
-                                                         ))
-                                            ),
+                                            
                                             fluidRow(
                                               tabBox(
                                                 title = "b2",
                                                 side = "left",
-                                                width = 12,
+                                                width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
                                                 #          fluidRow(
                                                 #            column(3,
@@ -836,8 +788,8 @@ ui <- fluidPage(
                                                                               )
                                                                      )
                                                          )
-                                          
-                                                         ),
+                                                         
+                                                ),
                                                 tabPanel("day of week from a4", icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          
@@ -856,29 +808,11 @@ ui <- fluidPage(
                                                 
                                                 
                                                 
-                                                )
-                                            ),
-                                            # fluidRow(
-                                            #   tabBox(
-                                            #     title = "a4",
-                                            #     side = "left",
-                                            #     width = 12,
-                                            # 
-                                            #     tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
-                                            #              fluidRow(
-                                            #                column(6,
-                                            #                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                            #                       plotOutput("Ohare1WeekdayHourlyArrDep")),
-                                            #                column(6,
-                                            #                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                            #                       plotOutput("Midway1WeekdayHourlyArrDep"))
-                                            #              )))
-                                            # ),
-                                            fluidRow(
+                                              ),
                                               tabBox(
                                                 title = "b3",
                                                 side = "left",
-                                                width = 12,
+                                                width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
                                                 #          fluidRow(
                                                 #            column(6,
@@ -898,35 +832,86 @@ ui <- fluidPage(
                                                                   plotlyOutput("Midway1YearlMostCommon"))
                                                          )))
                                             ),
+
                                             fluidRow(
                                               tabBox(
-                                                title = "b4 (a5 is the same info)",
+                                                title = "b1 (a2 is the same info)",
                                                 side = "left",
-                                                width = 12,
-                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
-                                                         fluidRow(
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  DTOutput("Ohare1YearDelaysTable")),
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  DTOutput("Midway1YearDelaysTable"))
-                                                         )),
-                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
-                                                         fluidRow(
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotlyOutput("Ohare1YearDelays")),
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotlyOutput("Midway1YearDelays"))
-                                                         )))
-                                            ),
-                                            fluidRow(
+                                                width = 6,
+                                                # tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                #          fluidRow(
+                                                #            column(3,
+                                                #                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                #                   DTOutput("Ohare1YearAirlinesArrivalsTable")),
+                                                #            column(3,
+                                                #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                #                   DTOutput("Ohare1YearAirlinesDeparturesTable")),
+                                                #            column(3,
+                                                #                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                #                   DTOutput("Midway1YearAirlinesArrivalsTable")),
+                                                #            column(3,
+                                                #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                #                   DTOutput("Midway1YearAirlinesDeparturesTable"))
+                                                #          )),
+                                                tabPanel("arrivals departures b1", icon = icon("line-chart", "fa-2x"), br(),
+                                                         
+                                                         tabsetPanel(id = "b1Tabs",
+                                                                     tabPanel("Arrivals", 
+                                                                              fluidRow(
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Ohare1YearAirlinesArrivals")), #, height = "80vh"
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Midway1YearAirlinesArrivals"))
+                                                                              )
+                                                                     ),
+                                                                     tabPanel("Departures", 
+                                                                              fluidRow(
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Ohare1YearAirlinesDepartures")),
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Midway1YearAirlinesDepartures"))
+                                                                              )
+                                                                     )
+                                                         )
+                                                         
+                                                 
+                                                         ),
+                                                tabPanel("delays b4", icon = icon("line-chart", "fa-2x"), br(),
+                                                         
+                                                         tabsetPanel(id = "b1Tabs",
+                                                                     tabPanel("Chart", 
+                                                                              fluidRow(
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Ohare1YearDelays")),
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                                       plotlyOutput("Midway1YearDelays"))
+                                                                              )
+                                                                     ),
+                                                                     tabPanel("Table", 
+                                                                              fluidRow(
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                                       DTOutput("Ohare1YearDelaysTable")),
+                                                                                column(6,
+                                                                                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                                       DTOutput("Midway1YearDelaysTable"))
+                                                                              )
+                                                                     )
+                                                         )
+                                                         
+                                                         
+                                                         
+                                                        )),
                                               tabBox(
                                                 title = "a7 + G1 + G2",
                                                 side = "left",
-                                                width = 12,
+                                                width = 6,
                                                 tabPanel("", icon = icon("table", "fa-2x"), br(),
                                                          fluidRow(
                                                            column(6,
@@ -960,8 +945,28 @@ ui <- fluidPage(
                                                                      )
                                                          )
                                                          
-                                                         ))
+                                                ))
                                             )
+                                            
+                                            # fluidRow(
+                                            #   tabBox(
+                                            #     title = "a4",
+                                            #     side = "left",
+                                            #     width = 12,
+                                            # 
+                                            #     tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                            #              fluidRow(
+                                            #                column(6,
+                                            #                       #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                            #                       plotOutput("Ohare1WeekdayHourlyArrDep")),
+                                            #                column(6,
+                                            #                       #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                            #                       plotOutput("Midway1WeekdayHourlyArrDep"))
+                                            #              )))
+                                            # ),
+           
+
+                  
                                             
                                             
                                             
