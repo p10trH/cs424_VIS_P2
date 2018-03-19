@@ -1636,14 +1636,16 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Month,
                                     y = value,
                                     group = variable,
-                                    color = variable)) +
+                                    color = variable,
+                                    text = value)) +
         labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
         scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
-        ylim(0, maxY))  %>%
-        layout(yaxis = list(fixedrange = TRUE)) %>%
-        layout(xaxis = list(fixedrange = TRUE))
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
+      config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+      layout(yaxis = list(fixedrange = TRUE)) %>%
+      layout(xaxis = list(fixedrange = TRUE))
         
       
       # OR
@@ -1707,12 +1709,14 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Month,
                                     y = value,
                                     group = variable,
-                                    color = variable)) +
+                                    color = variable,
+                                    text = value)) +
         labs(title = "Midway Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
         geom_line(size = 1.5, alpha = 0.7) + 
         scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
       
