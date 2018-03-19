@@ -5093,4 +5093,28 @@ server <- function(input, output) {
       datatable(delays)
     })
     
+    
+    
+    # Other Table
+    # Interesting Things
+    output$InterestingThingsTable <- renderDT({
+      interestingTable <- matrix(c(
+        "Thursday, November 23rd (2017-11-23)", "Thanksgiving", "description1",
+        "Tuesday, July 4th (2017-7-4)", "4th of July", "description2",
+        "Monday, December 25th (2017-12-25)", "Christmas", "description2",
+        "Friday, May 5th (2017-5-29)", "Memorial Day", "description2",
+        "Tuesday, February 14th (2017-2-14)", "Valentine's Day", "description2",
+        "Tuesday, August 8th (2017-8-28)", "UIC Fall Sart", "description2",
+        "Monday, January 16th (2017-1-16)", "UIC Spring Start", "description2",
+        "Friday, December 15th (2017-12-15)", "UIC Fall End", "description2",
+        "Friday, May 5th (2017-5-5)", "UIC Spring End", "description2",
+        "Monday, September 4th (2017-9-4)", "Labor Day", "description2"), 
+        ncol = 3, byrow = TRUE)
+      colnames(interestingTable) <- c("Date", "Event", "Description")
+      
+      interestingTable <- as.data.frame(interestingTable)
+      
+      datatable(interestingTable)
+    })
+
 }
