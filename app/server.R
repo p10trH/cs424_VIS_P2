@@ -1360,7 +1360,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1408,7 +1408,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1465,7 +1465,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1522,7 +1522,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
