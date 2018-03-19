@@ -20,7 +20,9 @@ ui <- fluidPage(
   
   tags$style(HTML("
 
-    .tabbable > .nav[id=mainNav] > li                     {font-size: 20px;}
+    .tabbable > .nav > li                     {font-size: 22px; font-weight: bold;}
+
+    .tabbable > .nav[id=mainNav] > li                     {font-size: 24px;}
     .tabbable > .nav[id=mainNav] > li > a                 {color: #CFCFCF; border-radius: 4px; border: 0px;}
     .tabbable > .nav[id=mainNav] > li[class=active] > a   {background-color: #484747; color: white; border: 0px;}
     .tabbable > .nav[id=mainNav] > li > a:hover           {background-color: #484747;}
@@ -125,15 +127,15 @@ ui <- fluidPage(
   # Top title and buttons
   
   tags$style(type='text/css', "#action_Settings, #action_About {padding: 10px 10px 10px 10px; margin-top: 23px;}"),
-  tags$style(type='text/css', "h1 {font-size: 50px; font-weight: bold; color: #484747;}"),
+  tags$style(type='text/css', "h1 {font-size: 60px; font-weight: bold; color: #484747;}"),
   
   
   # App title & buttons  ---------------------------
   
   fluidRow(column(4, h1("Illinois Flights '17")), 
            column(3, offset = 5, align = 'right',
-                  actionButton("action_Settings", label = "", icon = icon("cog", "fa-2x")),
-                  actionButton("action_About", label = "", icon = icon("info", "fa-2x")))),
+                  actionButton("action_Settings", label = "", icon = icon("cog", "fa-3x")),
+                  actionButton("action_About", label = "", icon = icon("info", "fa-3x")))),
   br(),
   
   # ---------------------------
@@ -212,15 +214,15 @@ ui <- fluidPage(
                                                 title = "heatmaps",
                                                 side = "left",
                                                 width = 12,
-                                                tabPanel("", icon = icon("table", "fa-2x"), br(),
-                                                         fluidRow(
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  DTOutput("tmp21")),
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  DTOutput("tmp22"))
-                                                         )),
+                                                # tabPanel("", icon = icon("table", "fa-2x"), br(),
+                                                #          fluidRow(
+                                                #            column(6,
+                                                #                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                #                   DTOutput("tmp21")),
+                                                #            column(6,
+                                                #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                #                   DTOutput("tmp22"))
+                                                #          )),
                                                 tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
                                                          fluidRow(box(selectInput("Delays", "Delay", c("All", "NAS", "Weather", "Security", "Late Aircraft", "Carrier")))),
                                                          fluidRow(
