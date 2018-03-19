@@ -20,11 +20,13 @@ textSize_pix <- '16px'
 # dygraph(seriesData) %>% dyRangeSelector()
 
 
-themeTest <- theme(plot.margin= unit(c(1,1,1,1), "cm"),
+themeTest <- theme(plot.margin= unit(c(1,1,1.5,1), "cm"),
               plot.background = element_rect(fill = "#AAAAAA"),
               legend.background = element_rect(fill = "#AAAAAA"),
+              axis.text.x = element_text(angle = 30),
               axis.text = element_text(size = textSize),
-              axis.title = element_text(size = textSize))
+              axis.title = element_text(size = textSize),
+              legend.text = element_text(size = textSize))
 
 
 
