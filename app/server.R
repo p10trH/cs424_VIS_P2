@@ -446,7 +446,7 @@ server <- function(input, output) {
   
     # C====
     # C1: Total # of Departures & Arrivals (Airlines)
-    output$OhareAirlineArrDep <- renderPlotly({
+    output$OhareAirlineArrDep <- renderPlot({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -488,7 +488,7 @@ server <- function(input, output) {
       
       
       # Plot
-      ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
+      ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
                                            fill = variable,
                                            text = value)) +
@@ -497,13 +497,11 @@ server <- function(input, output) {
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY), tooltip = c("x", "text")) %>%
-      config(staticPlot = FALSE, displayModeBar = FALSE) %>%
-      layout(yaxis = list(fixedrange = TRUE)) %>%
-      layout(xaxis = list(fixedrange = TRUE))
+        ylim(0, maxY) +
+        coord_flip()
     })
     
-    output$MidwayAirlineArrDep <- renderPlotly({
+    output$MidwayAirlineArrDep <- renderPlot({
       # Select Proper Month:
       oneMonth <- oneMonthReactive()
       
@@ -545,17 +543,15 @@ server <- function(input, output) {
       
       
       # Plot
-      ggplotly(ggplot(data = airlineArrDepMelt, aes(x = Airline,
+      ggplot(data = airlineArrDepMelt, aes(x = Airline,
                                            y = value,
                                            fill = variable,
                                            text = value)) +
         labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
         geom_bar(stat = "identity", position = "dodge") +
         scale_fill_brewer(palette = "Set1") + 
-        ylim(0, maxY), tooltip = c("x", "text")) %>%
-        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
-        layout(yaxis = list(fixedrange = TRUE)) %>%
-        layout(xaxis = list(fixedrange = TRUE))
+        ylim(0, maxY) + 
+        coord_flip()
     })
     
     # C2: Total # of Departures & Arrivals (Hourly)
@@ -1169,18 +1165,18 @@ server <- function(input, output) {
     # B1: Total # Departures/Arrivals per Airline (Monthly)
     output$Ohare1YearAirlinesArrivals <- renderPlotly({
       
-      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
@@ -1200,18 +1196,18 @@ server <- function(input, output) {
     
     output$Ohare1YearAirlinesDepartures <- renderPlotly({
       
-      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
@@ -1231,18 +1227,18 @@ server <- function(input, output) {
     
     output$Midway1YearAirlinesArrivals <- renderPlotly({
       
-      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
@@ -1272,18 +1268,18 @@ server <- function(input, output) {
     
     output$Midway1YearAirlinesDepartures <- renderPlotly({
       
-      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
@@ -1328,18 +1324,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -1385,18 +1381,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -1433,18 +1429,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -1490,18 +1486,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -1711,18 +1707,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -1793,18 +1789,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -1875,18 +1871,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan= n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar= n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -1957,18 +1953,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -3026,18 +3022,18 @@ server <- function(input, output) {
     # B1: Total # Departures/Arrivals per Airline (MOnthly)
     output$Ohare1YearAirlinesArrivalsTable <- renderDT({
       
-      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
@@ -3047,18 +3043,18 @@ server <- function(input, output) {
     
     output$Ohare1YearAirlinesDeparturesTable <- renderDT({
       
-      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
@@ -3070,18 +3066,18 @@ server <- function(input, output) {
     
     output$Midway1YearAirlinesArrivalsTable <- renderDT({
       
-      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      arrivals1 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan= n())
+      arrivals2 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      arrivals3 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      arrivals4 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       arrivals5 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      arrivals6 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      arrivals7 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      arrivals8 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      arrivals9 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      arrivals10 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      arrivals11 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      arrivals12 <- allFlights24 %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
@@ -3093,18 +3089,18 @@ server <- function(input, output) {
     
     output$Midway1YearAirlinesDeparturesTable <- renderDT({
       
-      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(January = n())
-      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(February = n())
-      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(March = n())
-      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(April = n())
+      departures1 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jan = n())
+      departures2 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Feb = n())
+      departures3 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Mar = n())
+      departures4 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Apr = n())
       departures5 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(Airline = CARRIER_NAME) %>% summarise(May = n())
-      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(June = n())
-      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(July = n())
-      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(August = n())
-      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(September = n())
-      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(October = n())
-      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(November = n())
-      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(December = n())
+      departures6 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jun = n())
+      departures7 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Jul = n())
+      departures8 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Aug = n())
+      departures9 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Sep = n())
+      departures10 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Oct = n())
+      departures11 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Nov = n())
+      departures12 <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(Airline = CARRIER_NAME) %>% summarise(Dec = n())
       
       departures <- join_all(list(airlines, departures1, departures2, departures3, departures4, departures5, departures6, departures7, departures8, departures9, departures10, departures11, departures12), by = "Airline")
       departures[is.na(departures)] = 0
@@ -3130,18 +3126,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar= n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -3168,18 +3164,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -3206,18 +3202,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August= n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -3244,18 +3240,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October= n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct= n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -3406,18 +3402,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -3444,18 +3440,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
       departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
@@ -3482,18 +3478,18 @@ server <- function(input, output) {
       }
       
       # Filter Arrivals
-      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(January = n()) %>% na.omit()
-      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(February = n()) %>% na.omit()
-      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(March = n()) %>% na.omit()
-      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(April = n()) %>% na.omit()
+      arrivals1 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(ARR_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      arrivals2 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(ARR_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      arrivals3 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(ARR_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      arrivals4 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(ARR_TIME) %>% summarise(Apr = n()) %>% na.omit()
       arrivals5 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(ARR_TIME) %>% summarise(May = n()) %>% na.omit()
-      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(June = n()) %>% na.omit()
-      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(July = n()) %>% na.omit()
-      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(August = n()) %>% na.omit()
-      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(September = n()) %>% na.omit()
-      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(October = n()) %>% na.omit()
-      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(November = n()) %>% na.omit()
-      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(December = n()) %>% na.omit()
+      arrivals6 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(ARR_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      arrivals7 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(ARR_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      arrivals8 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(ARR_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      arrivals9 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(ARR_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      arrivals10 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(ARR_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      arrivals11 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(ARR_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      arrivals12 <- allFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(ARR_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("ARR_TIME")
@@ -3520,18 +3516,18 @@ server <- function(input, output) {
       }
       
       # Filter Departures
-      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(January = n()) %>% na.omit()
-      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(February = n()) %>% na.omit()
-      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(March = n()) %>% na.omit()
-      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(April = n()) %>% na.omit()
+      departures1 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 1) %>% group_by(DEP_TIME) %>% summarise(Jan = n()) %>% na.omit()
+      departures2 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 2) %>% group_by(DEP_TIME) %>% summarise(Feb = n()) %>% na.omit()
+      departures3 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 3) %>% group_by(DEP_TIME) %>% summarise(Mar = n()) %>% na.omit()
+      departures4 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 4) %>% group_by(DEP_TIME) %>% summarise(Apr = n()) %>% na.omit()
       departures5 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 5) %>% group_by(DEP_TIME) %>% summarise(May = n()) %>% na.omit()
-      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(June = n()) %>% na.omit()
-      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(July = n()) %>% na.omit()
-      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(August = n()) %>% na.omit()
-      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(September = n()) %>% na.omit()
-      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(October = n()) %>% na.omit()
-      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(November = n()) %>% na.omit()
-      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(December = n()) %>% na.omit()
+      departures6 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 6) %>% group_by(DEP_TIME) %>% summarise(Jun = n()) %>% na.omit()
+      departures7 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 7) %>% group_by(DEP_TIME) %>% summarise(Jul = n()) %>% na.omit()
+      departures8 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 8) %>% group_by(DEP_TIME) %>% summarise(Aug = n()) %>% na.omit()
+      departures9 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 9) %>% group_by(DEP_TIME) %>% summarise(Sep = n()) %>% na.omit()
+      departures10 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 10) %>% group_by(DEP_TIME) %>% summarise(Oct = n()) %>% na.omit()
+      departures11 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 11) %>% group_by(DEP_TIME) %>% summarise(Nov = n()) %>% na.omit()
+      departures12 <- allFlights %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & month(FL_DATE) == 12) %>% group_by(DEP_TIME) %>% summarise(Dec = n()) %>% na.omit()
       
       # Combine and Melt
       colnames(hourFormat) <- c("DEP_TIME")
