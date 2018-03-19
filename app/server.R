@@ -1350,11 +1350,20 @@ server <- function(input, output) {
       
       allArrivalsMelt <- melt(allArrivals)
       
+      if (input$checkbox_scale)
+      {
+        maxY <- 2076
+      }
+      else
+      {
+        maxY <- 1777
+      }
+      
       ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
                                          y = ARR_TIME,
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
         labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -1448,7 +1457,7 @@ server <- function(input, output) {
       
       if (input$checkbox_scale)
       {
-        maxY <- 1777
+        maxY <- 2076
       }
       else
       {
