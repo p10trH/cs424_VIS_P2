@@ -20,7 +20,11 @@ textSize_pix <- '16px'
 # dygraph(seriesData) %>% dyRangeSelector()
 
 
-themeTest <- theme(plot.margin= unit(c(1,1,1,1), "cm"))
+themeTest <- theme(plot.margin= unit(c(1,1,1,1), "cm"),
+              plot.background = element_rect(fill = "#AAAAAA"),
+              legend.background = element_rect(fill = "#AAAAAA"),
+              axis.text = element_text(size = textSize),
+              axis.title = element_text(size = textSize))
 
 
 
@@ -1142,16 +1146,14 @@ server <- function(input, output) {
                                            y = value,
                                            fill = variable,
                                            text = value)) +
-        labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
+        labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "") +
         geom_bar(stat = "identity", position = "dodge") +
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
         scale_fill_brewer(palette = "Set1") + 
         ylim(0, maxY) +
         coord_flip() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     output$MidwayAirlineArrDep <- renderPlot({
@@ -1200,14 +1202,12 @@ server <- function(input, output) {
                                            y = value,
                                            fill = variable,
                                            text = value)) +
-        labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "Legend") +
+        labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "") +
         geom_bar(stat = "identity", position = "dodge") +
         scale_fill_brewer(palette = "Set1") + 
         ylim(0, maxY) + 
         coord_flip() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     # C2: Total # of Departures & Arrivals (Hourly)
@@ -1294,12 +1294,10 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "") +
         geom_point() +
           
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize))+
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1386,11 +1384,9 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1452,11 +1448,9 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
+        labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1516,11 +1510,9 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "Legend") +
+        labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1591,9 +1583,7 @@ server <- function(input, output) {
                                     text = value)) + 
         labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) + 
+          themeTest + 
         geom_line(size = 1.5, alpha = 0.7) +
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1662,9 +1652,7 @@ server <- function(input, output) {
                                     text = value)) + 
         labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) + 
+          themeTest + 
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY), tooltip = c("x", "text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1711,9 +1699,7 @@ server <- function(input, output) {
         guides(fill = FALSE) +
         coord_flip() + 
         ylim(0, maxY) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     output$OhareMostCommonDestinationAirports <- renderPlot({
@@ -1753,9 +1739,7 @@ server <- function(input, output) {
         guides(fill = FALSE) +
         coord_flip() +
         ylim(0, maxY) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     output$MidwayMostCommonArrivalAirports <- renderPlot({
@@ -1795,9 +1779,7 @@ server <- function(input, output) {
         guides(fill = FALSE) +
         coord_flip() +
         ylim(0, maxY) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     output$MidwayMostCommonDestinationAirports <- renderPlot({
@@ -1837,9 +1819,7 @@ server <- function(input, output) {
         guides(fill = FALSE) +
         coord_flip() +
         ylim(0, maxY) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize))
+        themeTest
     })
     
     
@@ -1874,11 +1854,9 @@ server <- function(input, output) {
                                       y = Airline,
                                       text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1908,11 +1886,9 @@ server <- function(input, output) {
                                         y = Airline,
                                         text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1952,10 +1928,8 @@ server <- function(input, output) {
                                       y = Airline,
                                       text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
-        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "Legend") +
+          themeTest +
+        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "") +
         scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#85aef2", high = "#001a44"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -1996,11 +1970,9 @@ server <- function(input, output) {
                                         y = Airline,
                                         text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = "Legend"), tooltip = c("text")) %>%
+        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2058,11 +2030,9 @@ server <- function(input, output) {
                                          y = ARR_TIME,
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2109,11 +2079,9 @@ server <- function(input, output) {
                                            y = DEP_TIME,
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2169,11 +2137,9 @@ server <- function(input, output) {
                                          y = ARR_TIME,
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2229,11 +2195,9 @@ server <- function(input, output) {
                                            y = DEP_TIME,
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", fill = "Legend"), tooltip = c("text")) %>%
+        labs(title = "Midway Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2259,13 +2223,12 @@ server <- function(input, output) {
       ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
                                              group = Airport,
-                                             color = Airport)) + 
+                                             color = Airport,
+                                             text = Flights)) + 
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
-        geom_line(size = 1.5, alpha = 0.7)) %>%
+          themeTest +
+        geom_line(size = 1.5, alpha = 0.7), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2298,14 +2261,13 @@ server <- function(input, output) {
       ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
                                              group = Airport,
-                                             color = Airport)) + 
+                                             color = Airport,
+                                             text = Flights)) + 
         labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
         geom_point()  +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize))+
+          themeTest+
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2355,11 +2317,9 @@ server <- function(input, output) {
                                     group = variable,
                                     color = variable,
                                     text = value)) +
-        labs(title = "O'hare Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "O'hare Yearly Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
         ylim(0, maxY), tooltip = c("x", "text")) %>%
@@ -2431,11 +2391,9 @@ server <- function(input, output) {
                                     group = variable,
                                     color = variable,
                                     text = value)) +
-        labs(title = "Midway Yearly Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "Midway Yearly Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
         ylim(0, maxY), tooltip = c("x", "text")) %>%
@@ -2472,7 +2430,7 @@ server <- function(input, output) {
     
     
     # A2: 1 Day Departures/Arrivals per Airline (Monthly)
-    output$Ohare1YearAirlineHourlyArrivals <- renderPlot({
+    output$Ohare1YearAirlineHourlyArrivals <- renderPlotly({
       
       allFlights <- oneAirlineReactive()
       
@@ -2547,17 +2505,19 @@ server <- function(input, output) {
         maxY <- max(allArrivalsMelt$value)
       }
 
-      ggplot(data = allArrivalsMelt, aes(x = variable,
-                                         y = ARR_TIME)) +
+      ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME,
+                                         text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend")
+        labs(title = "O'hare Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Ohare1YearAirlineHourlyDepartures <- renderPlot({
+    output$Ohare1YearAirlineHourlyDepartures <- renderPlotly({
       
       allFlights <- oneAirlineReactive()
       
@@ -2632,17 +2592,19 @@ server <- function(input, output) {
         maxY <- max(allDeparturesMelt$value)
       }
       
-      ggplot(data = allDeparturesMelt, aes(x = variable,
-                                           y = DEP_TIME)) +
+      ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME,
+                                           text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = "Legend")
+        labs(title = "O'hare Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
+      config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+      layout(yaxis = list(fixedrange = TRUE)) %>%
+      layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearAirlineHourlyArrivals <- renderPlot({
+    output$Midway1YearAirlineHourlyArrivals <- renderPlotly({
       
       allFlights <- oneAirlineReactive()
       
@@ -2717,17 +2679,19 @@ server <- function(input, output) {
         maxY <- max(allArrivalsMelt$value)
       }
       
-      ggplot(data = allArrivalsMelt, aes(x = variable,
-                                         y = ARR_TIME)) +
+      ggplotly(ggplot(data = allArrivalsMelt, aes(x = variable,
+                                         y = ARR_TIME,
+                                         text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend")
+        labs(title = "Midway Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
-    output$Midway1YearAirlineHourlyDepartures <- renderPlot({
+    output$Midway1YearAirlineHourlyDepartures <- renderPlotly({
       
       allFlights <- oneAirlineReactive()
       
@@ -2802,14 +2766,16 @@ server <- function(input, output) {
         maxY <- max(allDeparturesMelt$value)
       }
       
-      ggplot(data = allDeparturesMelt, aes(x = variable,
-                                           y = DEP_TIME)) +
+      ggplotly(ggplot(data = allDeparturesMelt, aes(x = variable,
+                                           y = DEP_TIME,
+                                           text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+          themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", fill = "Legend")
+        labs(title = "Midway Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
+        layout(yaxis = list(fixedrange = TRUE)) %>%
+        layout(xaxis = list(fixedrange = TRUE))
     })
     
     
@@ -2904,14 +2870,14 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
-        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+                                          color = variable,
+                                          text = value)) +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text"))%>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
     })
@@ -2978,14 +2944,14 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
-                                    color = variable)) + 
-        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+                                    color = variable,
+                                    text = value)) + 
+        labs(title = "Ohare Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) + 
+          themeTest + 
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text"))%>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
     })
@@ -3075,14 +3041,14 @@ server <- function(input, output) {
       ggplotly(ggplot(data = hourlyArrDepMelt, aes(x = Hour,
                                           y = value,
                                           group = variable,
-                                          color = variable)) +
-        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+                                          color = variable,
+                                          text = value)) +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) +
+          themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text"))%>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
     })
@@ -3148,14 +3114,14 @@ server <- function(input, output) {
       ggplotly(ggplot(data = delaysMelt, aes(x = Hour, 
                                     y = value,
                                     group = variable,
-                                    color = variable)) + 
-        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+                                    color = variable,
+                                    text = value)) + 
+        labs(title = "Midway Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-          theme(axis.text = element_text(size = textSize),
-                #axis.text.x=element_text(angle=0),
-                axis.title = element_text(size = textSize)) + 
+          themeTest + 
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY)) %>%
+        ylim(0, maxY), tooltip = c("x", "text"))%>%
+        config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
     })
@@ -3272,11 +3238,9 @@ server <- function(input, output) {
                                           y = value,
                                           group = variable,
                                           color = variable)) +
-        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+        themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY)
     })
@@ -3317,11 +3281,9 @@ server <- function(input, output) {
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
-        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "Ohare Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) + 
+        themeTest + 
         geom_line(size = 1.5, alpha = 0.7)
     })
     
@@ -3428,11 +3390,9 @@ server <- function(input, output) {
                                           y = value,
                                           group = variable,
                                           color = variable)) +
-        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "Legend") +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) +
+        themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
         ylim(0, maxY)
     })
@@ -3473,11 +3433,9 @@ server <- function(input, output) {
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
-        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "Midway Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
-        theme(axis.text = element_text(size = textSize),
-              #axis.text.x=element_text(angle=0),
-              axis.title = element_text(size = textSize)) + 
+        themeTest + 
         geom_line(size = 1.5, alpha = 0.7)
     })
   
@@ -3572,9 +3530,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3587,9 +3543,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3602,9 +3556,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3617,9 +3569,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3632,9 +3582,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3647,9 +3595,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3705,9 +3651,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3720,9 +3664,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3735,9 +3677,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3750,9 +3690,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3765,9 +3703,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3780,9 +3716,7 @@ server <- function(input, output) {
                                               y = Hour,
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3824,9 +3758,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3839,9 +3771,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3854,9 +3784,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3869,9 +3797,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3884,9 +3810,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3899,9 +3823,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "O'Hare Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3943,9 +3865,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3958,9 +3878,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3973,9 +3891,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -3988,9 +3904,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -4003,9 +3917,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -4018,9 +3930,7 @@ server <- function(input, output) {
                                               y = Weekday,
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
-                   theme(axis.text = element_text(size = textSize),
-                         #axis.text.x=element_text(angle=0),
-                         axis.title = element_text(size = textSize)) + themeTest  +
+                   themeTest  +
                    scale_fill_gradient(low = "#85aef2", high = "#001a44") +
                    labs(title = "Midway Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -4743,7 +4653,7 @@ server <- function(input, output) {
     
     # A====
     
-    # A1: TARUSH VIG!?!?!
+    
     
     
     # A2: 1 Day Departures/Arrivals per Airline (Monthly)
