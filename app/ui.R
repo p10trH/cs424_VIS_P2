@@ -190,14 +190,11 @@ ui <- fluidPage(
                                                          fluidRow(
                                                            column(8, align = 'left',
                                                                   selectInput("Airport",label=NULL, 
-                                                                              choices = top50Airports$ORIGIN_AIRPORT))),
+                                                                              choices = top50Airports$ORIGIN_AIRPORT, selected = "LaGuardia"))),
                                                          fluidRow(
-                                                           column(6,
+                                                           column(12,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp55")),
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp56"))
+                                                                  dygraphOutput("dygraphAirport"))
                                                          )))
                                             )
                                             
@@ -225,13 +222,23 @@ ui <- fluidPage(
                                                                   DTOutput("tmp22"))
                                                          )),
                                                 tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                         fluidRow(box(selectInput("Delays", "Delay", c("All", "NAS", "Weather", "Security", "Late Aircraft", "Carrier")))),
                                                          fluidRow(
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp23")),
+                                                                  plotlyOutput("OhareDelays1YearAll")),
                                                            column(6,
                                                                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  plotOutput("tmp24"))
+                                                                  plotlyOutput("MidwayDelays1YearAll"))
+                                                           
+                                                         ),
+                                                         fluidRow(
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
+                                                                  plotlyOutput("OhareDelays1YearAllWeekday")),
+                                                           column(6,
+                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
+                                                                  plotlyOutput("MidwayDelays1YearAllWeekday"))
                                                          )))
                                             )
                                             

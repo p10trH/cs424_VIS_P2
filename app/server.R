@@ -3359,6 +3359,406 @@ server <- function(input, output) {
     
     
     
+    
+    # A1 Dygraph
+    output$dygraphAirport <- renderDygraph({
+      airport <- input$Airport
+      
+      allFlightsOhareToFromAirport <- filter(allOnTimeFlights, (ORIGIN_AIRPORT == "Chicago O\'Hare International" & DEST_AIRPORT == airport) | (ORIGIN_AIRPORT == airport & DEST_AIRPORT == "Chicago O\'Hare International")) %>%
+        group_by(FL_DATE) %>%
+        summarise(Flights = n())
+      
+      allFlightsMidwayToFromAirport <- filter(allOnTimeFlights, (ORIGIN_AIRPORT == "Chicago Midway International" & DEST_AIRPORT == airport) | (ORIGIN_AIRPORT == airport & DEST_AIRPORT == "Chicago Midway International")) %>%
+        group_by(FL_DATE) %>%
+        summarise(Flights = n())
+      
+      series1 = xts(x = allFlightsOhareToFromAirport$Flights, order.by = allFlightsOhareToFromAirport$FL_DATE)
+      colnames(series1) <- c(airport)
+      
+      series2 = xts(x = allFlightsMidwayToFromAirport$Flights, order.by = allFlightsMidwayToFromAirport$FL_DATE)
+      colnames(series1) <- c(airport)
+      
+      allData <- cbind(series1, series2)
+      colnames(allData) <- c("O\'Hare", "Midway")
+      
+      dygraph(allData, group = "overview") %>% dyRangeSelector(height = 50, strokeColor = "#484747", fillColor = "#DDDDDD") %>%
+        dyOptions(colors = c("#1E5493", "#860800")) %>%
+        dyAxis("y", label = "Flights") %>%
+        dyOptions(includeZero = TRUE) %>%
+        dyOptions(strokeWidth = 3) %>%
+        #dyOptions(axisLabelFontSize = 16) %>%
+        dyLegend(hideOnMouseOut = FALSE, width = 350, show = "follow")%>% 
+        dyRoller(rollPeriod = 1) %>%
+        dyShading(from = "2017-1-1", to = "2017-1-31", color = "#AFAFAF") %>%
+        dyShading(from = "2017-3-1", to = "2017-3-31", color = "#AFAFAF") %>%
+        dyShading(from = "2017-5-1", to = "2017-5-31", color = "#AFAFAF") %>%
+        dyShading(from = "2017-7-1", to = "2017-7-31", color = "#AFAFAF") %>%
+        dyShading(from = "2017-9-1", to = "2017-9-30", color = "#AFAFAF") %>%
+        dyShading(from = "2017-11-1", to = "2017-11-30", color = "#AFAFAF")
+      
+    })
+    
+    # Other
+    output$OhareDelays1YearAll <- renderPlotly({
+      
+      # Select Delays
+      delays <- allOnTimeFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(ARR_TIMESTAMP, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -ARR_TIMESTAMP) %>%
+        group_by(month(ARR_TIMESTAMP), hour(ARR_TIMESTAMP)) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      # Fix Month
+      delays$ARR_TIMESTAMP = NULL
+      colnames(delays) <- c("Month", "Hour", "Carrier Delay", "Weather Delay", "NAS Delay", "Security Delay", "Late Aircraft Delay", "Total")
+      
+      delays$Month <- month.abb[delays$Month]
+      
+      
+      # Fix Hour
+      if (input$HourFormat)
+      {
+        delays$Hour <- format(strptime(delays$Hour, format="%H"), format = "%H:00")
+        hourFormat <- hours24
+      }
+      else
+      {
+        delays$Hour <- format(strptime(delays$Hour, format="%H"), format = "%I:00 %p")
+        hourFormat <- hours12
+      }
+      
+      # Fix Missing Values
+      allHoursMonths <- expand.grid(Hour = hourFormat[,], Month = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      
+      allDelays <- left_join(allHoursMonths, delays, by = c("Hour" = "Hour", "Month" = "Month"))
+      allDelays[is.na(allDelays)] <- 0
+      
+      # Fix Ordering
+      allDelays$Hour <- ordered(allDelays$Hour, levels = hourFormat[,])
+      allDelays$Month <- ordered(allDelays$Month, levels = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      
+      if (input$Delays == "All")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = Total)) +
+                   geom_tile(aes(fill = allDelays$Total)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Total Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "NAS")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`NAS Delay`)) +
+                   geom_tile(aes(fill = allDelays$`NAS Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare NAS Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Security")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Security Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Security Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Security Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Weather")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Weather Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Weather Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Weather Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Carrier")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Carrier Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Carrier Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Late Aircraft")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Late Aircraft Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Late Aircraft Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+    })
+    
+    output$MidwayDelays1YearAll <- renderPlotly({
+      
+      # Select Delays
+      delays <- allOnTimeFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(ARR_TIMESTAMP, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -ARR_TIMESTAMP) %>%
+        group_by(month(ARR_TIMESTAMP), hour(ARR_TIMESTAMP)) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      # Fix Month
+      delays$ARR_TIMESTAMP = NULL
+      colnames(delays) <- c("Month", "Hour", "Carrier Delay", "Weather Delay", "NAS Delay", "Security Delay", "Late Aircraft Delay", "Total")
+      
+      delays$Month <- month.abb[delays$Month]
+      
+      
+      # Fix Hour
+      if (input$HourFormat)
+      {
+        delays$Hour <- format(strptime(delays$Hour, format="%H"), format = "%H:00")
+        hourFormat <- hours24
+      }
+      else
+      {
+        delays$Hour <- format(strptime(delays$Hour, format="%H"), format = "%I:00 %p")
+        hourFormat <- hours12
+      }
+      
+      # Fix Missing Values
+      allHoursMonths <- expand.grid(Hour = hourFormat[,], Month = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      
+      allDelays <- left_join(allHoursMonths, delays, by = c("Hour" = "Hour", "Month" = "Month"))
+      allDelays[is.na(allDelays)] <- 0
+      
+      # Fix Ordering
+      allDelays$Hour <- ordered(allDelays$Hour, levels = hourFormat[,])
+      allDelays$Month <- ordered(allDelays$Month, levels = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      
+      if (input$Delays == "All")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = Total)) +
+                   geom_tile(aes(fill = allDelays$Total)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Total Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "NAS")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`NAS Delay`)) +
+                   geom_tile(aes(fill = allDelays$`NAS Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway NAS Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Security")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Security Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Security Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Security Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Weather")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Weather Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Weather Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Weather Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Carrier")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Carrier Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Carrier Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Late Aircraft")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Hour,
+                                              text = allDelays$`Late Aircraft Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Late Aircraft Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+    })
+    
+    output$OhareDelays1YearAllWeekday <- renderPlotly({
+      
+      # Select Delays
+      delays <- allOnTimeFlights %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(ARR_TIMESTAMP, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -ARR_TIMESTAMP) %>%
+        group_by(month(ARR_TIMESTAMP), weekdays(ARR_TIMESTAMP)) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      # Fix Weekday/Month
+      delays$ARR_TIMESTAMP = NULL
+      colnames(delays) <- c("Month", "Weekday", "Carrier Delay", "Weather Delay", "NAS Delay", "Security Delay", "Late Aircraft Delay", "Total")
+      delays$Month <- month.abb[delays$Month]
+      
+      # Fix Missing Values
+      allHoursWeekdays <- expand.grid(Month = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"), Weekday = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+      
+      allDelays <- left_join(allHoursWeekdays, delays, by = c("Month" = "Month", "Weekday" = "Weekday"))
+      allDelays[is.na(allDelays)] <- 0
+      
+      # Fix Ordering
+      allDelays$Month <- ordered(allDelays$Month, levels = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      allDelays$Weekday <- ordered(allDelays$Weekday, levels = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+      
+      if (input$Delays == "All")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = Total)) +
+                   geom_tile(aes(fill = allDelays$Total)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Total Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "NAS")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`NAS Delay`)) +
+                   geom_tile(aes(fill = allDelays$`NAS Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare NAS Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Security")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Security Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Security Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Security Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Weather")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Weather Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Weather Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Weather Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Carrier")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Carrier Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Carrier Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Late Aircraft")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Late Aircraft Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "O'Hare Late Aircraft Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+    })
+    
+    output$MidwayDelays1YearAllWeekday <- renderPlotly({
+      
+      # Select Delays
+      delays <- allOnTimeFlights %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(ARR_TIMESTAMP, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -ARR_TIMESTAMP) %>%
+        group_by(month(ARR_TIMESTAMP), weekdays(ARR_TIMESTAMP)) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      # Fix Weekday/Month
+      delays$ARR_TIMESTAMP = NULL
+      colnames(delays) <- c("Month", "Weekday", "Carrier Delay", "Weather Delay", "NAS Delay", "Security Delay", "Late Aircraft Delay", "Total")
+      delays$Month <- month.abb[delays$Month]
+      
+      # Fix Missing Values
+      allHoursWeekdays <- expand.grid(Month = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"), Weekday = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+      
+      allDelays <- left_join(allHoursWeekdays, delays, by = c("Month" = "Month", "Weekday" = "Weekday"))
+      allDelays[is.na(allDelays)] <- 0
+      
+      # Fix Ordering
+      allDelays$Month <- ordered(allDelays$Month, levels = c("Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+      allDelays$Weekday <- ordered(allDelays$Weekday, levels = c("Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+      
+      if (input$Delays == "All")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = Total)) +
+                   geom_tile(aes(fill = allDelays$Total)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Total Delays", x = "Month", y = "Hour", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "NAS")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`NAS Delay`)) +
+                   geom_tile(aes(fill = allDelays$`NAS Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway NAS Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Security")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Security Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Security Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Security Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Weather")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Weather Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Weather Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Weather Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Carrier")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Carrier Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Carrier Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+      else if (input$Delays == "Late Aircraft")
+      {
+        ggplotly(ggplot(data = allDelays, aes(x = Month,
+                                              y = Weekday,
+                                              text = allDelays$`Late Aircraft Delay`)) +
+                   geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
+                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   labs(title = "Midway Late Aircraft Delays", x = "Month", y = "Day", fill = "Legend"), tooltip = "text")
+      }
+    })
+    
   #Tables----
     # C====
     # C1: Total # of Departures & Arrivals (Airlines)
