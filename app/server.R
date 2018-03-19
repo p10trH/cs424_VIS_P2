@@ -1899,10 +1899,26 @@ server <- function(input, output) {
       colnames(departures) <- c("Hour", "Departures")
       
       # Combine and Melt:
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDepMelt$Total <- delays$Total
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
@@ -1928,11 +1944,11 @@ server <- function(input, output) {
         
         hourlyArrDepMelt2 <- melt(hourlyArrDep2, id.vars = "Hour")
         
-        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value)
+        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value, delays$Total)
       }
       else
       {
-        maxY <- max(hourlyArrDepMelt$value)
+        maxY <- max(hourlyArrDepMelt$value, delays$Total)
       }
       
       # Plot
@@ -1969,7 +1985,8 @@ server <- function(input, output) {
         mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
         group_by(DEP_TIME) %>%
         summarise_each(funs(sum)) %>%
-        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY)
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
       
       colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
       
@@ -2047,10 +2064,26 @@ server <- function(input, output) {
       colnames(departures) <- c("Hour", "Departures")
       
       # Combine and Melt:
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDep$Total <- delays$Total
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
@@ -2076,11 +2109,11 @@ server <- function(input, output) {
         
         hourlyArrDepMelt2 <- melt(hourlyArrDep2, id.vars = "Hour")
         
-        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value)
+        maxY <- max(hourlyArrDepMelt2$value, hourlyArrDepMelt$value, delays$Total)
       }
       else
       {
-        maxY <- max(hourlyArrDepMelt$value)
+        maxY <- max(hourlyArrDepMelt$value, delays$Total)
       }
       
       # Plot
@@ -2203,10 +2236,26 @@ server <- function(input, output) {
       colnames(departures) <- c("Hour", "Departures")
       
       # Combine and Melt:
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago O\'Hare International" | ORIGIN_AIRPORT == "Chicago O\'Hare International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDep$Total <- delays$Total
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
@@ -2290,10 +2339,26 @@ server <- function(input, output) {
       colnames(departures) <- c("Hour", "Departures")
       
       # Combine and Melt:
+      delays <- oneMonth %>% filter(DEST_AIRPORT == "Chicago Midway International" | ORIGIN_AIRPORT == "Chicago Midway International") %>%
+        select(DEP_TIME, CARRIER_DELAY : LATE_AIRCRAFT_DELAY) %>%
+        filter(CARRIER_DELAY > 0 | WEATHER_DELAY > 0 | NAS_DELAY > 0 | SECURITY_DELAY > 0 | LATE_AIRCRAFT_DELAY > 0) %>%
+        mutate_each(funs(replace(., . > 0, 1)), -DEP_TIME) %>%
+        group_by(DEP_TIME) %>%
+        summarise_each(funs(sum)) %>%
+        mutate(Total = CARRIER_DELAY + WEATHER_DELAY + NAS_DELAY + SECURITY_DELAY + LATE_AIRCRAFT_DELAY) %>%
+        na.omit()
+      
+      colnames(delays) <- c("Hour", "Carrier", "Weather", "NAS", "Security", "Aircraft", "Total")
+      
+      delays <- join_all(list(hourFormat, delays), by = "Hour", type = "full")
+      delays[is.na(delays)] = 0
+      
       hourlyArrDep <- join_all(list(hourFormat, arrivals, departures), by = "Hour", type = "full")
       hourlyArrDep[is.na(hourlyArrDep)] = 0
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      hourlyArrDep$Total <- delays$Total
       
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
