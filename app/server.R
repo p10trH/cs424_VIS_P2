@@ -1828,7 +1828,7 @@ server <- function(input, output) {
                                          y = ARR_TIME)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend")
     })
     
     output$Ohare1YearAirlineHourlyDepartures <- renderPlot({
@@ -1910,7 +1910,7 @@ server <- function(input, output) {
                                            y = DEP_TIME)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = "Legend")
     })
     
     output$Midway1YearAirlineHourlyArrivals <- renderPlot({
@@ -1992,7 +1992,7 @@ server <- function(input, output) {
                                          y = ARR_TIME)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = "Legend")
     })
     
     output$Midway1YearAirlineHourlyDepartures <- renderPlot({
@@ -2074,7 +2074,7 @@ server <- function(input, output) {
                                            y = DEP_TIME)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
         scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
-        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", color = "Legend")
+        labs(title = "Midway Departures (2017)", x = "Month", y = "Hour", fill = "Legend")
     })
     
     
