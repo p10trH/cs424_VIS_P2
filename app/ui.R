@@ -357,7 +357,7 @@ ui <- fluidPage(
                                                 #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
                                                 #                   DTOutput("Midway1YearAirlineHourlyDeparturesTable"))
                                                 #          )),
-                                                tabPanel("", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("", icon = icon("line-chart", "fa-2x"), 
                                                          
                                                          
                                                          tabsetPanel(id = "a2Tabs",
