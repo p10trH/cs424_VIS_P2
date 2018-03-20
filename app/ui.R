@@ -158,7 +158,7 @@ ui <- fluidPage(
                         
                                             fluidRow(
                                               tabBox(
-                                                title = "original dygraph + A6",
+                                                title = "Total Flights",#"original dygraph + A6",
                                                 side = "left",
                                                 width = 12,
                                                 
@@ -177,7 +177,7 @@ ui <- fluidPage(
                                             ),
                                             fluidRow(
                                               tabBox(
-                                                title = "a1",
+                                                title = "Total Flights Between a Specific Airport", # "a1",
                                                 side = "left",
                                                 width = 12,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -212,7 +212,7 @@ ui <- fluidPage(
                                         
                                             fluidRow(
                                               tabBox(
-                                                title = "heatmaps",
+                                                title = "Delays",
                                                 side = "left",
                                                 width = 12,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -280,11 +280,11 @@ ui <- fluidPage(
    
                                             fluidRow(
                                               tabBox(
-                                                title = "a3",
+                                                title = "24 Hour Breakdown",
                                                 side = "left",
                                                 width = 12,
                                                 
-                                                tabPanel("Arrivals Departures", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Arrivals & Departures",# icon = icon("line-chart", "fa-2x"), br(),
                                                          fluidRow(
                                                            column(6,
                                                                   tags$style(type = "text/css", "#Ohare1DayHourlyArrDep {min-height:30vh !important;}"),
@@ -293,7 +293,7 @@ ui <- fluidPage(
                                                                   tags$style(type = "text/css", "#Midway1DayHourlyArrDep {min-height:30vh !important;}"),
                                                                   plotlyOutput("Midway1DayHourlyArrDep"))
                                                          )),
-                                                tabPanel("Delays", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Delays", #icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          fluidRow(
                                                            column(6,
@@ -328,7 +328,7 @@ ui <- fluidPage(
                                                 tabPanel("", icon = icon("table", "fa-2x"), br(),
                                                          
                                                          tabsetPanel(id = "a3Tabs",
-                                                                     tabPanel("Arrivals Departures", 
+                                                                     tabPanel("Arrivals & Departures", 
                                                                               fluidRow(
                                                                                 column(6,
                                                                                        tags$style(type = "text/css", "#Ohare1DayHourlyArrDepTable {min-height:25vh !important;}"),
@@ -451,7 +451,7 @@ ui <- fluidPage(
                                               #   )
                                               #   ),
                                               column(6, offset=0),tabBox(
-                                                title = "a7 + G1 + G2",
+                                                title = "Total flights Across the U.S.", #a7g1g2
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -521,11 +521,11 @@ ui <- fluidPage(
                                             
                                             fluidRow(
                                               tabBox(
-                                                title = "c2 + c4",
+                                                title =  "Arrivals & Departures",#"c2 + c4",
                                                 side = "left",
                                                 width = 7,
                                                 
-                                                tabPanel("Hour", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Hour", br(), #icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          fluidRow(
                                                            column(6,
@@ -537,7 +537,7 @@ ui <- fluidPage(
                                                          )
                                                         
                                                     ),
-                                                tabPanel("Hour Delays", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Hour Delays", br(), #icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          fluidRow(
                                                            column(6,
@@ -554,7 +554,7 @@ ui <- fluidPage(
                                                          
                                                          
                                                 ),
-                                                tabPanel("Week", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Week", br(), #icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          
                                                          
@@ -610,7 +610,7 @@ ui <- fluidPage(
                                                 
                                                 ),
                                               tabBox(
-                                                title = "c5",
+                                                title =  "Top 15 Airports",#"c5",
                                                 side = "left",
                                                 width = 5,
                                                 
@@ -676,7 +676,7 @@ ui <- fluidPage(
                                             
                                             fluidRow(
                                               tabBox(
-                                                title = "c1",
+                                                title = "Flights For All Domestic Airlines",#"c1",
                                                 side = "left",
                                                 width = 6,
                                                 
@@ -701,7 +701,7 @@ ui <- fluidPage(
                                                 
                                                 ),
                                               tabBox(
-                                                title = "a7 + G1 + G2",
+                                                title = "Total flights Across the U.S.",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -801,7 +801,7 @@ ui <- fluidPage(
                                             
                                             fluidRow(
                                               tabBox(
-                                                title = "b2",
+                                                title = "Arrivals & Departures",#"b2",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -819,7 +819,7 @@ ui <- fluidPage(
                                                 #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
                                                 #                   DTOutput("Midway1YearHourlyDeparturesTable"))
                                                 #          )),
-                                                tabPanel("hour", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Hour", br(),#icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          
                                                          tabsetPanel(id = "b2Tabs",
@@ -846,7 +846,7 @@ ui <- fluidPage(
                                                          )
                                                          
                                                 ),
-                                                tabPanel("day of week from a4", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Day of Week", br(),#icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          
                                                          fluidRow(
@@ -866,7 +866,7 @@ ui <- fluidPage(
                                                 
                                               ),
                                               tabBox(
-                                                title = "b3",
+                                                title = "Top 15 Destinations",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -891,7 +891,7 @@ ui <- fluidPage(
 
                                             fluidRow(
                                               tabBox(
-                                                title = "b1 (a2 is the same info)",
+                                                title = "Flights for Domestic Airlines & Delays",#"b1 (a2 is the same info)",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -909,7 +909,7 @@ ui <- fluidPage(
                                                 #                   #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
                                                 #                   DTOutput("Midway1YearAirlinesDeparturesTable"))
                                                 #          )),
-                                                tabPanel("arrivals departures b1", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Arrivals & Departures", br(),#icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          tabsetPanel(id = "b1Tabs",
                                                                      tabPanel("Arrivals", 
@@ -936,7 +936,7 @@ ui <- fluidPage(
                                                          
                                                  
                                                          ),
-                                                tabPanel("a2", icon = icon("line-chart", "fa-2x"), 
+                                                tabPanel("Specific Airline", #icon = icon("line-chart", "fa-2x"), 
                                                          
                                                          fluidRow(column(6, offset = 0, align = 'left',
                                                                          selectInput("Airline", label = NULL, width = "100%",
@@ -987,7 +987,7 @@ ui <- fluidPage(
                                                          #          plotOutput("Midway1YearAirlineHourlyDepartures"))
                                                          # )
                                                 ),
-                                                tabPanel("delays b4", icon = icon("line-chart", "fa-2x"), br(),
+                                                tabPanel("Delays", br(),#icon = icon("line-chart", "fa-2x"), br(),
                                                          
                                                          tabsetPanel(id = "b1Tabs",
                                                                      tabPanel("Chart", 
@@ -1016,7 +1016,7 @@ ui <- fluidPage(
                                                          
                                                         )),
                                               tabBox(
-                                                title = "a7 + G1 + G2",
+                                                title = "Total Flights Across the U.S.",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),

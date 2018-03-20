@@ -1857,7 +1857,8 @@ server <- function(input, output) {
                                       text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
           themeTest +
-        scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
+        # scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
+          scale_fill_gradient(low = "#66ff88", high = "#006616") +
         labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -1889,7 +1890,8 @@ server <- function(input, output) {
                                         text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
           themeTest +
-        scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+        # scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+          scale_fill_gradient(low = "#66ff88", high = "#006616")+
         labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -1932,7 +1934,8 @@ server <- function(input, output) {
         geom_tile(aes(fill = arrivalsMelt$value)) +
           themeTest +
         labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "") +
-        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#85aef2", high = "#001a44"), tooltip = c("text")) %>%
+          
+        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#66ff88", high = "#006616"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2033,7 +2036,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
         labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2082,7 +2085,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(low = "#7bf7c5", high = "#004f2f") + 
+        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
         labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2140,7 +2143,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
         labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2512,7 +2515,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
         labs(title = "O'hare Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2599,7 +2602,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
         labs(title = "O'hare Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
       config(staticPlot = FALSE, displayModeBar = FALSE) %>%
       layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2686,7 +2689,7 @@ server <- function(input, output) {
                                          text = value)) +
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
         labs(title = "Midway Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3533,7 +3536,7 @@ server <- function(input, output) {
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3546,7 +3549,7 @@ server <- function(input, output) {
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3559,7 +3562,7 @@ server <- function(input, output) {
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3572,7 +3575,7 @@ server <- function(input, output) {
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3585,7 +3588,7 @@ server <- function(input, output) {
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3598,7 +3601,7 @@ server <- function(input, output) {
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3654,7 +3657,7 @@ server <- function(input, output) {
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3667,7 +3670,7 @@ server <- function(input, output) {
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3680,7 +3683,7 @@ server <- function(input, output) {
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3693,7 +3696,7 @@ server <- function(input, output) {
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3706,7 +3709,7 @@ server <- function(input, output) {
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3719,7 +3722,7 @@ server <- function(input, output) {
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3761,7 +3764,7 @@ server <- function(input, output) {
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3774,7 +3777,7 @@ server <- function(input, output) {
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3787,7 +3790,7 @@ server <- function(input, output) {
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3800,7 +3803,7 @@ server <- function(input, output) {
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3813,7 +3816,7 @@ server <- function(input, output) {
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3826,7 +3829,7 @@ server <- function(input, output) {
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
                    themeTest +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "O'Hare Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3868,7 +3871,7 @@ server <- function(input, output) {
                                               text = Total)) +
                    geom_tile(aes(fill = allDelays$Total)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Total Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3881,7 +3884,7 @@ server <- function(input, output) {
                                               text = allDelays$`NAS Delay`)) +
                    geom_tile(aes(fill = allDelays$`NAS Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway NAS Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3894,7 +3897,7 @@ server <- function(input, output) {
                                               text = allDelays$`Security Delay`)) +
                    geom_tile(aes(fill = allDelays$`Security Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Security Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3907,7 +3910,7 @@ server <- function(input, output) {
                                               text = allDelays$`Weather Delay`)) +
                    geom_tile(aes(fill = allDelays$`Weather Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Weather Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3920,7 +3923,7 @@ server <- function(input, output) {
                                               text = allDelays$`Carrier Delay`)) +
                    geom_tile(aes(fill = allDelays$`Carrier Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Carrier Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3933,7 +3936,7 @@ server <- function(input, output) {
                                               text = allDelays$`Late Aircraft Delay`)) +
                    geom_tile(aes(fill = allDelays$`Late Aircraft Delay`)) +
                    themeTest  +
-                   scale_fill_gradient(low = "#85aef2", high = "#001a44") +
+                   scale_fill_gradient(low = "#66ff88", high = "#006616") +
                    labs(title = "Midway Late Aircraft Delays", x = "", y = "", fill = ""), tooltip = "text")%>%
           config(staticPlot = FALSE, displayModeBar = FALSE) %>%
           layout(yaxis = list(fixedrange = TRUE)) %>%
