@@ -3967,7 +3967,14 @@ server <- function(input, output) {
       airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
       
       # Table
-      datatable(airlineArrDep)
+      datatable(airlineArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayAirlineArrDepTable <- renderDT({
@@ -3993,7 +4000,14 @@ server <- function(input, output) {
       airlineArrDepMelt <- melt(airlineArrDep, id.vars = "Airline")
       
       # Table
-      datatable(airlineArrDep)
+      datatable(airlineArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4038,7 +4052,14 @@ server <- function(input, output) {
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
       # Table
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayHourlyArrDepTable <- renderDT({
@@ -4078,7 +4099,14 @@ server <- function(input, output) {
       hourlyArrDepMelt <- melt(hourlyArrDep, id.vars = "Hour")
       
       # Table
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4110,7 +4138,14 @@ server <- function(input, output) {
       hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
       
       # Table
-      datatable(weeklyArrDep)
+      datatable(weeklyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayWeeklyArrDepTable <- renderDT({
@@ -4140,7 +4175,14 @@ server <- function(input, output) {
       hourlyArrDepMelt <- melt(weeklyArrDep, id.vars = "Day")
       
       # Table
-      datatable(weeklyArrDep)
+      datatable(weeklyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4178,7 +4220,14 @@ server <- function(input, output) {
       delaysMelt <- melt(delays, id.vars = "Hour")
       
       # Table
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayHourlyDelaysTable <- renderDT({
@@ -4214,7 +4263,14 @@ server <- function(input, output) {
       delaysMelt <- melt(delays, id.vars = "Hour")
       
       # Table
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4232,7 +4288,14 @@ server <- function(input, output) {
       colnames(arrivalAirports) <- c("Airport", "Flights")
       
       # Table
-      datatable(arrivalAirports)
+      datatable(arrivalAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$OhareMostCommonDestinationAirportsTable <- renderDT({
@@ -4248,7 +4311,14 @@ server <- function(input, output) {
       colnames(destinationAirports) <- c("Airport", "Flights")
       
       # Table
-      datatable(destinationAirports)
+      datatable(destinationAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayMostCommonArrivalAirportsTable <- renderDT({
@@ -4264,7 +4334,14 @@ server <- function(input, output) {
       colnames(arrivalAirports) <- c("Airport", "Flights")
       
       # Table
-      datatable(arrivalAirports)
+      datatable(arrivalAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$MidwayMostCommonDestinationAirportsTable <- renderDT({
@@ -4280,7 +4357,14 @@ server <- function(input, output) {
       colnames(destinationAirports) <- c("Airport", "Flights")
       
       # Table
-      datatable(destinationAirports)
+      datatable(destinationAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4310,7 +4394,14 @@ server <- function(input, output) {
       arrivals <- join_all(list(airlines, arrivals1, arrivals2, arrivals3, arrivals4, arrivals5, arrivals6, arrivals7, arrivals8, arrivals9, arrivals10, arrivals11, arrivals12), by = "Airline")
       arrivals[is.na(arrivals)] = 0
       
-      datatable(arrivals)
+      datatable(arrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Ohare1YearAirlinesDeparturesTable <- renderDT({
@@ -4333,7 +4424,14 @@ server <- function(input, output) {
       
       departures$Airline = NULL
       
-      datatable(departures)
+      datatable(departures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearAirlinesArrivalsTable <- renderDT({
@@ -4356,7 +4454,14 @@ server <- function(input, output) {
       
       arrivals$Airline = NULL
       
-      datatable(arrivals)
+      datatable(arrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearAirlinesDeparturesTable <- renderDT({
@@ -4379,7 +4484,14 @@ server <- function(input, output) {
       
       departures$Airline = NULL
       
-      datatable(departures)
+      datatable(departures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     # B2: Total # Departures/Arrivals (Hourly + Monthly)
@@ -4418,7 +4530,14 @@ server <- function(input, output) {
       
       allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
       
-      datatable(allArrivals)
+      datatable(allArrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Ohare1YearHourlyDeparturesTable <- renderDT({
@@ -4456,7 +4575,14 @@ server <- function(input, output) {
       
       allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
       
-      datatable(allDepartures)
+      datatable(allDepartures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearHourlyArrivalsTable <- renderDT({
@@ -4494,7 +4620,14 @@ server <- function(input, output) {
       
       allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
       
-      datatable(allArrivals)
+      datatable(allArrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearHourlyDeparturesTable <- renderDT({
@@ -4532,7 +4665,14 @@ server <- function(input, output) {
       
       allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
       
-      datatable(allDepartures)
+      datatable(allDepartures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4552,7 +4692,14 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
-      datatable(destinationAirports)
+      datatable(destinationAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearlMostCommonTable <- renderDT({
@@ -4570,7 +4717,14 @@ server <- function(input, output) {
       
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
-      datatable(destinationAirports)
+      datatable(destinationAirports, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4610,7 +4764,14 @@ server <- function(input, output) {
       delays$FL_DATE <- NULL
       colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearDelaysTable <- renderDT({
@@ -4648,7 +4809,14 @@ server <- function(input, output) {
       delays$FL_DATE <- NULL
       colnames(delays) <- c("Month", "Carrier", "Weather", "NAS", "Security", "Aircraft")
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4694,7 +4862,14 @@ server <- function(input, output) {
       
       allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
       
-      datatable(allArrivals)
+      datatable(allArrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Ohare1YearAirlineHourlyDeparturesTable <- renderDT({
@@ -4732,7 +4907,14 @@ server <- function(input, output) {
       
       allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
       
-      datatable(allDepartures)
+      datatable(allDepartures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearAirlineHourlyArrivalsTable <- renderDT({
@@ -4770,7 +4952,14 @@ server <- function(input, output) {
       
       allArrivals$ARR_TIME <- ordered(allArrivals$ARR_TIME, levels = hourFormat[,])
       
-      datatable(allArrivals)
+      datatable(allArrivals, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1YearAirlineHourlyDeparturesTable <- renderDT({
@@ -4808,7 +4997,14 @@ server <- function(input, output) {
       
       allDepartures$DEP_TIME <- ordered(allDepartures$DEP_TIME, levels = hourFormat[,])
       
-      datatable(allDepartures)
+      datatable(allDepartures, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4847,7 +5043,14 @@ server <- function(input, output) {
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Ohare1DayHourlyDelaysTable <- renderDT({
@@ -4880,7 +5083,14 @@ server <- function(input, output) {
       
       delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1DayHourlyArrDepTable <- renderDT({
@@ -4917,7 +5127,14 @@ server <- function(input, output) {
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1DayHourlyDelaysTable <- renderDT({
@@ -4950,7 +5167,14 @@ server <- function(input, output) {
       
       delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -4989,7 +5213,14 @@ server <- function(input, output) {
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Ohare1WeekdayHourlyDelaysTable <- renderDT({
@@ -5022,7 +5253,14 @@ server <- function(input, output) {
       
       delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1WeekdayHourlyArrDepTable <- renderDT({
@@ -5059,7 +5297,14 @@ server <- function(input, output) {
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
-      datatable(hourlyArrDep)
+      datatable(hourlyArrDep, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     output$Midway1WeekdayHourlyDelaysTable <- renderDT({
@@ -5092,7 +5337,14 @@ server <- function(input, output) {
       
       delays$Hour <- ordered(delays$Hour, levels = hourFormat[,])
       
-      datatable(delays)
+      datatable(delays, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
     
     
@@ -5116,7 +5368,14 @@ server <- function(input, output) {
       
       interestingTable <- as.data.frame(interestingTable)
       
-      datatable(interestingTable)
+      datatable(interestingTable, options = list(
+        searching = FALSE,
+        pageLength = 10,
+        dom = "t",
+        ordering = T,
+        lengthChange = FALSE),
+        rownames = FALSE
+      )
     })
 
 }
