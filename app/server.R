@@ -3973,7 +3973,7 @@ server <- function(input, output) {
       datatable(airlineArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4006,7 +4006,7 @@ server <- function(input, output) {
       datatable(airlineArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4058,7 +4058,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4105,7 +4105,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4144,7 +4144,7 @@ server <- function(input, output) {
       datatable(weeklyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4181,7 +4181,7 @@ server <- function(input, output) {
       datatable(weeklyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4226,7 +4226,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4269,7 +4269,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4294,7 +4294,7 @@ server <- function(input, output) {
       datatable(arrivalAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4317,7 +4317,7 @@ server <- function(input, output) {
       datatable(destinationAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4340,7 +4340,7 @@ server <- function(input, output) {
       datatable(arrivalAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4363,7 +4363,7 @@ server <- function(input, output) {
       datatable(destinationAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4400,7 +4400,7 @@ server <- function(input, output) {
       datatable(arrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4430,7 +4430,7 @@ server <- function(input, output) {
       datatable(departures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4460,7 +4460,7 @@ server <- function(input, output) {
       datatable(arrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4490,7 +4490,7 @@ server <- function(input, output) {
       datatable(departures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4536,7 +4536,7 @@ server <- function(input, output) {
       datatable(allArrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4581,7 +4581,7 @@ server <- function(input, output) {
       datatable(allDepartures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4626,7 +4626,7 @@ server <- function(input, output) {
       datatable(allArrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4671,7 +4671,7 @@ server <- function(input, output) {
       datatable(allDepartures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4698,7 +4698,7 @@ server <- function(input, output) {
       datatable(destinationAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4723,7 +4723,7 @@ server <- function(input, output) {
       datatable(destinationAirports, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4770,7 +4770,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4815,7 +4815,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4868,7 +4868,7 @@ server <- function(input, output) {
       datatable(allArrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4913,7 +4913,7 @@ server <- function(input, output) {
       datatable(allDepartures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -4958,7 +4958,7 @@ server <- function(input, output) {
       datatable(allArrivals, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5003,7 +5003,7 @@ server <- function(input, output) {
       datatable(allDepartures, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5049,7 +5049,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5089,7 +5089,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5133,7 +5133,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5173,7 +5173,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5219,7 +5219,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5259,7 +5259,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5303,7 +5303,7 @@ server <- function(input, output) {
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5343,7 +5343,7 @@ server <- function(input, output) {
       datatable(delays, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
@@ -5374,7 +5374,7 @@ server <- function(input, output) {
       datatable(interestingTable, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "t",
+        dom = "tp",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
