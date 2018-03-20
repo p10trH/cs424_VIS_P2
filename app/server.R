@@ -1148,7 +1148,7 @@ server <- function(input, output) {
                                            y = value,
                                            fill = variable,
                                            text = value)) +
-        labs(title = "O'hare Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "") +
+        labs(title = "O'hare Arrivals vs. Departures", x = "", y = "Num. of Flights", fill = "") +
         geom_bar(stat = "identity", position = "dodge") +
         expand_limits(0, 0) + 
         scale_y_continuous(expand = c(0, 0)) +
@@ -1204,7 +1204,7 @@ server <- function(input, output) {
                                            y = value,
                                            fill = variable,
                                            text = value)) +
-        labs(title = "Midway Arrivals vs. Departures", x = "Airline", y = "Num. of Flights", fill = "") +
+        labs(title = "Midway Arrivals vs. Departures", x = "", y = "Num. of Flights", fill = "") +
         geom_bar(stat = "identity", position = "dodge") +
         scale_fill_brewer(palette = "Set1") + 
         ylim(0, maxY) + 
@@ -1296,7 +1296,7 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "") +
+        labs(title = "O'hare Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
           
           themeTest +
@@ -1386,7 +1386,7 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "Midway Hourly Arrivals vs. Departures", x = "Time of Day (Hour)", y = "Num. of Flights", color = "") +
+        labs(title = "Midway Hourly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
           themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
@@ -1450,7 +1450,7 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "O'hare Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "") +
+        labs(title = "O'hare Weekly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
           themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
@@ -1512,7 +1512,7 @@ server <- function(input, output) {
                                           group = variable,
                                           color = variable,
                                           text = value)) +
-        labs(title = "Midway Weekly Arrivals vs. Departures", x = "Day of Week", y = "Num. of Flights", color = "") +
+        labs(title = "Midway Weekly Arrivals vs. Departures", x = "", y = "Num. of Flights", color = "") +
         geom_point() +
           themeTest +
         geom_line(size = 1.5, alpha = 0.7) + 
@@ -1583,7 +1583,7 @@ server <- function(input, output) {
                                     group = variable,
                                     color = variable,
                                     text = value)) + 
-        labs(title = "Ohare Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "Ohare Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
           themeTest + 
         geom_line(size = 1.5, alpha = 0.7) +
@@ -1652,7 +1652,7 @@ server <- function(input, output) {
                                     group = variable,
                                     color = variable,
                                     text = value)) + 
-        labs(title = "Midway Delays", x = "Hour", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "Midway Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
           themeTest + 
         geom_line(size = 1.5, alpha = 0.7) + 
@@ -1696,7 +1696,7 @@ server <- function(input, output) {
       # Plot
       ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
                                          y = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        labs(title = "O'Hare Most Common Arrival Airports", x = "", y = "Flights") +
         geom_bar(stat = "identity", fill = "red") + 
         guides(fill = FALSE) +
         coord_flip() + 
@@ -1736,7 +1736,7 @@ server <- function(input, output) {
       # Plot
       ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
                                              y = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        labs(title = "O'Hare Most Common Arrival Airports", x = "", y = "Flights") +
         geom_bar(stat = "identity", fill = "blue") + 
         guides(fill = FALSE) +
         coord_flip() +
@@ -1776,7 +1776,7 @@ server <- function(input, output) {
       # Plot
       ggplot(data = arrivalAirports, aes(x = reorder(Airport, Flights), 
                                          y = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        labs(title = "Midway Most Common Arrival Airports", x = "", y = "Flights") +
         geom_bar(stat = "identity", fill = "red") + 
         guides(fill = FALSE) +
         coord_flip() +
@@ -1816,7 +1816,7 @@ server <- function(input, output) {
       # Plot
       ggplot(data = destinationAirports, aes(x = reorder(Airport, Flights), 
                                              y = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        labs(title = "Midway Most Common Arrival Airports", x = "", y = "Flights") +
         geom_bar(stat = "identity", fill = "blue") + 
         guides(fill = FALSE) +
         coord_flip() +
@@ -1859,7 +1859,7 @@ server <- function(input, output) {
           themeTest +
         # scale_fill_gradient(na.value = "#bfbfbf",low = "#85aef2", high = "#001a44") + 
           scale_fill_gradient(low = "#66ff88", high = "#006616") +
-        labs(title = "O'hare Arrivals by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
+        labs(title = "O'hare Arrivals by Airline(2017)", x = "", y = "", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1892,7 +1892,7 @@ server <- function(input, output) {
           themeTest +
         # scale_fill_gradient(na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
           scale_fill_gradient(low = "#66ff88", high = "#006616")+
-        labs(title = "O'hare Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
+        labs(title = "O'hare Departures by Airline(2017)", x = "", y = "", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -1933,7 +1933,7 @@ server <- function(input, output) {
                                       text = value)) +
         geom_tile(aes(fill = arrivalsMelt$value)) +
           themeTest +
-        labs(title = "Midway Arrivals by Airline(2017)", x = "Month", y = "Hour", color = "") +
+        labs(title = "Midway Arrivals by Airline(2017)", x = "", y = "", color = "") +
           
         scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#66ff88", high = "#006616"), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
@@ -1977,7 +1977,7 @@ server <- function(input, output) {
         geom_tile(aes(fill = departuresMelt$value)) +
           themeTest +
         scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#66ff88", high = "#006616") + 
-        labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
+        labs(title = "Midway Departures by Airline(2017)", x = "", y = "", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2037,7 +2037,7 @@ server <- function(input, output) {
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
-        labs(title = "O'hare Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
+        labs(title = "O'hare Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2086,7 +2086,7 @@ server <- function(input, output) {
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
         scale_fill_gradient(low = "#66ff88", high = "#006616") + 
-        labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
+        labs(title = "O'hare Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2144,7 +2144,7 @@ server <- function(input, output) {
         geom_tile(aes(fill = allArrivalsMelt$value)) +
           themeTest +
         scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
-        labs(title = "Midway Arrivals (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
+        labs(title = "Midway Arrivals (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2218,22 +2218,31 @@ server <- function(input, output) {
         arrange(desc(freq)) %>%
         top_n(15)
       
+      topAirports$Airport_Abr <- c("LGA", "LAX", "MSP", "ATL", "SFO", "DFW", "DCA", "BOS", "DEN", "DTW", "PHX", "IAH", "SEA", "MCO", "PHL")
+      
+      
       destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago O\'Hare International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
         group_by(DEST_AIRPORT, month(FL_DATE)) %>%
         summarise(freq = n()) %>%
         arrange(desc(freq))
       
+      colnames(topAirports) <- c("Airport", "Flights", "Airport_Abbr")
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
+      destinationAirports <- merge(topAirports, destinationAirports, by = "Airport")
+      destinationAirports$Flights.x = NULL
+      
+      colnames(destinationAirports) <- c("Airport", "Abbr", "Month", "Flights")
+
       ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
-                                             group = Airport,
-                                             color = Airport,
-                                             text = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+                                             group = Abbr,
+                                             color = Abbr,
+                                             text = Airport)) + 
+        labs(title = "O'Hare Most Common Arrival Airports", x = "", y = "Flights") +
         geom_point() +
           themeTest +
-        geom_line(size = 1.5, alpha = 0.7), tooltip = c("text")) %>%
+        geom_line(size = 1.5, alpha = 0.7), tooltip = c("text", "y")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
@@ -2247,12 +2256,20 @@ server <- function(input, output) {
         arrange(desc(freq)) %>%
         top_n(15)
       
+      #topAirports$Airport_Abr <- c("LGA", "LAX", "MSP", "ATL", "SFO", "DFW", "DCA", "BOS", "DEN", "DTW", "PHX", "IAH", "SEA", "MCO", "PHL")
+      
       destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
         group_by(DEST_AIRPORT, month(FL_DATE)) %>%
         summarise(freq = n()) %>%
         arrange(desc(freq))
       
+      #colnames(topAirports) <- c("Airport", "Flights", "Airport_Abbr")
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
+      
+      #destinationAirports <- merge(topAirports, destinationAirports, by = "Airport")
+      #destinationAirports$Flights.x = NULL
+      
+      #colnames(destinationAirports) <- c("Airport", "Abbr", "Month", "Flights")
       
       if (input$checkbox_scale)
       {
@@ -2268,7 +2285,7 @@ server <- function(input, output) {
                                              group = Airport,
                                              color = Airport,
                                              text = Flights)) + 
-        labs(title = "Most Common Arrival Airports", x = "Airport", y = "Flights") +
+        labs(title = "Midway Most Common Arrival Airports", x = "", y = "Flights") +
         geom_point()  +
           themeTest+
         geom_line(size = 1.5, alpha = 0.7) + 
@@ -3286,7 +3303,7 @@ server <- function(input, output) {
                                     y = value,
                                     group = variable,
                                     color = variable)) + 
-        labs(title = "Ohare Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
+        labs(title = "O'hare Delays", x = "", y = "Num. of Delays", color = "Delay Type") +
         geom_point() +
         themeTest + 
         geom_line(size = 1.5, alpha = 0.7)
