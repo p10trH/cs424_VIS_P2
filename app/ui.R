@@ -136,7 +136,10 @@ ui <- fluidPage(
   
   tags$style(type='text/css', "#action_Settings, #action_About {padding: 10px 10px 10px 10px; margin-top: 23px;}"),
   tags$style(type='text/css', "h1 {font-size: 60px; font-weight: bold; color: #484747;}"),
-  tags$style(type='text/css', "h2 {font-size: 35px; font-weight: bold;  }"),
+  tags$style(type='text/css', "h2 {font-size: 35px; font-weight: bold;  }
+             .hovertext text {
+    font-size: 21px !important;
+             }"),
   
   
   # App title & buttons  ---------------------------
