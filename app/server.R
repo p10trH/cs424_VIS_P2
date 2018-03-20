@@ -2239,9 +2239,10 @@ server <- function(input, output) {
                                              group = Abbr,
                                              color = Abbr,
                                              text = Airport)) + 
-        labs(title = "O'Hare Most Common Arrival Airports", x = "", y = "Flights") +
+        labs(title = "O'Hare Most Common Destinations", x = "", y = "Flights") +
         geom_point() +
           themeTest +
+          scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
         geom_line(size = 1.5, alpha = 0.7), tooltip = c("text", "y")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2256,20 +2257,20 @@ server <- function(input, output) {
         arrange(desc(freq)) %>%
         top_n(15)
       
-      #topAirports$Airport_Abr <- c("LGA", "LAX", "MSP", "ATL", "SFO", "DFW", "DCA", "BOS", "DEN", "DTW", "PHX", "IAH", "SEA", "MCO", "PHL")
+      topAirports$Airport_Abr <- c("ATL", "MSP", "DEN", "LAS", "MCO", "KS", "PHX", "STL", "DAL", "BWI", "HOU", "BNA", "DCA", "LGA", "LAX")
       
       destinationAirports <- allFlights24 %>% filter(ORIGIN_AIRPORT == "Chicago Midway International" & DEST_AIRPORT %in% topAirports$DEST_AIRPORT) %>%
         group_by(DEST_AIRPORT, month(FL_DATE)) %>%
         summarise(freq = n()) %>%
         arrange(desc(freq))
       
-      #colnames(topAirports) <- c("Airport", "Flights", "Airport_Abbr")
+      colnames(topAirports) <- c("Airport", "Flights", "Airport_Abbr")
       colnames(destinationAirports) <- c("Airport", "Month", "Flights")
       
-      #destinationAirports <- merge(topAirports, destinationAirports, by = "Airport")
-      #destinationAirports$Flights.x = NULL
+      destinationAirports <- merge(topAirports, destinationAirports, by = "Airport")
+      destinationAirports$Flights.x = NULL
       
-      #colnames(destinationAirports) <- c("Airport", "Abbr", "Month", "Flights")
+      colnames(destinationAirports) <- c("Airport", "Abbr", "Month", "Flights")
       
       if (input$checkbox_scale)
       {
@@ -2282,14 +2283,15 @@ server <- function(input, output) {
       
       ggplotly(ggplot(data = destinationAirports, aes(x = Month, 
                                              y = Flights,
-                                             group = Airport,
-                                             color = Airport,
-                                             text = Flights)) + 
-        labs(title = "Midway Most Common Arrival Airports", x = "", y = "Flights") +
+                                             group = Abbr,
+                                             color = Abbr,
+                                             text = Airport)) + 
+        labs(title = "Midway Most Common Destinations", x = "", y = "Flights") +
         geom_point()  +
           themeTest+
         geom_line(size = 1.5, alpha = 0.7) + 
-        ylim(0, maxY), tooltip = c("text")) %>%
+          scale_x_continuous(breaks = round(seq(1, 12, by = 1),1)) +
+        ylim(0, maxY), tooltip = c("text", "y")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
         layout(xaxis = list(fixedrange = TRUE))
