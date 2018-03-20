@@ -5,6 +5,8 @@
 # ---------------------------
 load("data/allFlights24.RData")
 top50Airports <- allFlights24 %>% group_by(ORIGIN_AIRPORT) %>% summarise(Flights = n()) %>% top_n(50) %>% arrange(desc(Flights))
+top50Airports = top50Airports[-1,]
+top50Airports = top50Airports[-1,]
 # ---------------------------
 
 # Define UI
