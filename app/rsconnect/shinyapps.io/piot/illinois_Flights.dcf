@@ -5,8 +5,8 @@ account: piot
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 298206
-bundleId: 1278026
+bundleId: 1279074
 url: https://piot.shinyapps.io/illinois_Flights/
-when: 1521532530.48735
+when: 1521573251.06292
 asMultiple: FALSE
 asStatic: FALSE

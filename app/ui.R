@@ -95,7 +95,7 @@ ui <- fluidPage(
   
   tags$style(type='text/css', ".nav-tabs-custom {padding: 20px; margin-bottom: 20px; background-color: #AAAAAA; color: #484747; border-radius: 4px;}"),
   tags$style(type='text/css', "#mainNav {background-color: #666666; border-radius: 4px; border-bottom: 1px solid #666666;}"), # margin: -85px 120px 0px 350px !important;
-  tags$style(type='text/css', "#timelineNav {border-radius: 4px; border-bottom: 0px solid #188888;}"), #  float: left; margin-top: -48px;
+  tags$style(type='text/css', "#timelineNav {border-radius: 4px; border-bottom: 0px solid #188888; margin-top: -10px;}"), #  float: left; margin-top: -48px;
   tags$style(type='text/css', "#overviewNav {border-radius: 4px; border-bottom: 0px solid #188888;}"), #  float: left; margin-top: -48px;
   tags$style(type='text/css', "#mapTabs1, #mapTabs2, #mapTabs3, #a3Tabs, #a2Tabs, #b2Tabs, #b1Tabs, #c2c4tabs, #c5tabs1, #c5tabs2
                                     {border-radius: 4px; border-bottom: 0px solid #AAAAAA; margin-bottom: 10px;}"),
@@ -339,6 +339,7 @@ ui <- fluidPage(
                                                          
                                                          tabsetPanel(id = "a3Tabs",
                                                                      tabPanel("Arrivals & Departures", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
                                                                                        tags$style(type = "text/css", "#Ohare1DayHourlyArrDepTable {min-height:25vh !important;}"),
@@ -349,6 +350,7 @@ ui <- fluidPage(
                                                                               )
                                                                      ),
                                                                      tabPanel("Delays", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
                                                                                        tags$style(type = "text/css", "#Ohare1WeekdayHourlyDelaysTable {min-height:25vh !important;}"),
@@ -461,7 +463,7 @@ ui <- fluidPage(
                                               #   )
                                               #   ),
                                               column(6, offset=0),tabBox(
-                                                title = "Total flights Across the U.S.", #a7g1g2
+                                                title = "Total Flights Across the U.S.", #a7g1g2
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -584,32 +586,35 @@ ui <- fluidPage(
                                                          
                                                          tabsetPanel(id = "c2c4tabs",
                                                                      tabPanel("Week", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareWeeklyArrDepTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareWeeklyArrDepTable {min-height:25vh !important;}"),
                                                                                        DTOutput("OhareWeeklyArrDepTable")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayWeeklyArrDepTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayWeeklyArrDepTable {min-height:25vh !important;}"),
                                                                                        DTOutput("MidwayWeeklyArrDepTable"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Hour Delays", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareHourlyDelaysTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareHourlyDelaysTable {min-height:25vh !important;}"),
                                                                                        DTOutput("OhareHourlyDelaysTable")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayHourlyDelaysTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayHourlyDelaysTable {min-height:25vh !important;}"),
                                                                                        DTOutput("MidwayHourlyDelaysTable"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Hour", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareHourlyArrDepTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareHourlyArrDepTable {min-height:25vh !important;}"),
                                                                                        DTOutput("OhareHourlyArrDepTable")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayHourlyArrDepTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayHourlyArrDepTable {min-height:25vh !important;}"),
                                                                                        DTOutput("MidwayHourlyArrDepTable"))
                                                                               )
                                                                      )
@@ -630,20 +635,20 @@ ui <- fluidPage(
                                                                      tabPanel("Arrivals", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareMostCommonArrivalAirports {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareMostCommonArrivalAirports {min-height:27vh !important;}"),
                                                                                        plotOutput("OhareMostCommonArrivalAirports")), #, height = "80vh"
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayMostCommonArrivalAirports {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayMostCommonArrivalAirports {min-height:27vh !important;}"),
                                                                                        plotOutput("MidwayMostCommonArrivalAirports"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Departures", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareMostCommonDestinationAirports {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareMostCommonDestinationAirports {min-height:27vh !important;}"),
                                                                                        plotOutput("OhareMostCommonDestinationAirports")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayMostCommonDestinationAirports {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayMostCommonDestinationAirports {min-height:27vh !important;}"),
                                                                                        plotOutput("MidwayMostCommonDestinationAirports"))
                                                                               )
                                                                      )
@@ -656,22 +661,24 @@ ui <- fluidPage(
                                                          
                                                          tabsetPanel(id = "c5tabs1",
                                                                      tabPanel("Arrivals", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareMostCommonArrivalAirportsTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareMostCommonArrivalAirportsTable {min-height:25vh !important;}"),
                                                                                        DTOutput("OhareMostCommonArrivalAirportsTable")), #, height = "80vh"
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayMostCommonArrivalAirportsTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayMostCommonArrivalAirportsTable {min-height:25vh !important;}"),
                                                                                        DTOutput("MidwayMostCommonArrivalAirportsTable"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Departures", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#OhareMostCommonDestinationAirportsTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#OhareMostCommonDestinationAirportsTable {min-height:25vh !important;}"),
                                                                                        DTOutput("OhareMostCommonDestinationAirportsTable")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#MidwayMostCommonDestinationAirportsTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#MidwayMostCommonDestinationAirportsTable {min-height:25vh !important;}"),
                                                                                        DTOutput("MidwayMostCommonDestinationAirportsTable"))
                                                                               )
                                                                      )
@@ -693,13 +700,14 @@ ui <- fluidPage(
                                                 tabPanel("Bar Charts", br(),#icon = icon("line-chart", "fa-2x"), br(),
                                                          fluidRow(
                                                            column(6,
-                                                                  tags$style(type = "text/css", "#OhareAirlineArrDep {min-height:30vh !important;}"),
+                                                                  tags$style(type = "text/css", "#OhareAirlineArrDep {min-height:32vh !important;}"),
                                                                   plotOutput("OhareAirlineArrDep")),
                                                            column(6,
-                                                                  tags$style(type = "text/css", "#MidwayAirlineArrDep {min-height:30vh !important;}"),
+                                                                  tags$style(type = "text/css", "#MidwayAirlineArrDep {min-height:32vh !important;}"),
                                                                   plotOutput("MidwayAirlineArrDep"))
                                                          )),
                                                 tabPanel("Tables", br(),# icon = icon("table", "fa-2x"), br(),
+                                                         fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                          fluidRow(
                                                            column(6,
                                                                   tags$style(type = "text/css", "#OhareAirlineArrDepTable {min-height:30vh !important;}"),
@@ -711,7 +719,7 @@ ui <- fluidPage(
                                                 
                                                 ),
                                               tabBox(
-                                                title = "Total flights Across the U.S.",
+                                                title = "Total Flights Across the U.S.",
                                                 side = "left",
                                                 width = 6,
                                                 # tabPanel("", icon = icon("table", "fa-2x"), br(),
@@ -836,20 +844,20 @@ ui <- fluidPage(
                                                                      tabPanel("Arrivals", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Ohare1YearHourlyArrivals {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Ohare1YearHourlyArrivals {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Ohare1YearHourlyArrivals")), #, height = "80vh"
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Midway1YearHourlyArrivals {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Midway1YearHourlyArrivals {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Midway1YearHourlyArrivals"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Departures", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Ohare1YearHourlyDepartures {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Ohare1YearHourlyDepartures {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Ohare1YearHourlyDepartures")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Midway1YearHourlyDepartures {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Midway1YearHourlyDepartures {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Midway1YearHourlyDepartures"))
                                                                               )
                                                                      )
@@ -861,10 +869,10 @@ ui <- fluidPage(
                                                          
                                                          fluidRow(
                                                            column(6,
-                                                                  tags$style(type = "text/css", "#Ohare1WeekdayHourlyArrDep {min-height:30vh !important;}"),
+                                                                  tags$style(type = "text/css", "#Ohare1WeekdayHourlyArrDep {min-height:29vh !important;}"),
                                                                   plotOutput("Ohare1WeekdayHourlyArrDep")),
                                                            column(6,
-                                                                  tags$style(type = "text/css", "#Midway1WeekdayHourlyArrDep {min-height:30vh !important;}"),
+                                                                  tags$style(type = "text/css", "#Midway1WeekdayHourlyArrDep {min-height:29vh !important;}"),
                                                                   plotOutput("Midway1WeekdayHourlyArrDep"))
                                                          )
                                                          
@@ -961,20 +969,20 @@ ui <- fluidPage(
                                                                      tabPanel("Arrivals", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Ohare1YearAirlineHourlyArrivals {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Ohare1YearAirlineHourlyArrivals {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Ohare1YearAirlineHourlyArrivals")), #, height = "80vh"
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Midway1YearAirlineHourlyArrivals {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Midway1YearAirlineHourlyArrivals {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Midway1YearAirlineHourlyArrivals"))
                                                                               )
                                                                      ),
                                                                      tabPanel("Departures", 
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Ohare1YearAirlineHourlyDepartures {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Ohare1YearAirlineHourlyDepartures {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Ohare1YearAirlineHourlyDepartures")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Midway1YearAirlineHourlyDepartures {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Midway1YearAirlineHourlyDepartures {min-height:27vh !important;}"),
                                                                                        plotlyOutput("Midway1YearAirlineHourlyDepartures"))
                                                                               )
                                                                      )
@@ -1011,12 +1019,13 @@ ui <- fluidPage(
                                                                               )
                                                                      ),
                                                                      tabPanel("Table", 
+                                                                              fluidRow(column(6,h4("O\'Hare")), column(6,h4("Midway"))),
                                                                               fluidRow(
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Ohare1YearDelaysTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Ohare1YearDelaysTable {min-height:28vh !important;}"),
                                                                                        DTOutput("Ohare1YearDelaysTable")),
                                                                                 column(6,
-                                                                                       tags$style(type = "text/css", "#Midway1YearDelaysTable {min-height:30vh !important;}"),
+                                                                                       tags$style(type = "text/css", "#Midway1YearDelaysTable {min-height:28vh !important;}"),
                                                                                        DTOutput("Midway1YearDelaysTable"))
                                                                               )
                                                                      )

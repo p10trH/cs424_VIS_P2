@@ -4,8 +4,8 @@
 
 # ---------------------------
 
-textSize <- 16
-textSize_pix <- '16px'
+textSize <- 15
+textSize_pix <- '15px'
 
 # ---------------------------
 
@@ -108,12 +108,12 @@ server <- function(input, output) {
       #dyOptions(axisLabelFontSize = 16) %>%
       dyLegend(hideOnMouseOut = FALSE, width = 350, show = "follow")%>% 
       dyRoller(rollPeriod = 1) %>%
-      dyShading(from = "2017-1-1", to = "2017-1-31", color = "#AFAFAF") %>%
-      dyShading(from = "2017-3-1", to = "2017-3-31", color = "#AFAFAF") %>%
-      dyShading(from = "2017-5-1", to = "2017-5-31", color = "#AFAFAF") %>%
-      dyShading(from = "2017-7-1", to = "2017-7-31", color = "#AFAFAF") %>%
-      dyShading(from = "2017-9-1", to = "2017-9-30", color = "#AFAFAF") %>%
-      dyShading(from = "2017-11-1", to = "2017-11-30", color = "#AFAFAF") %>%
+      dyShading(from = "2017-1-1", to = "2017-1-31", color = "#BBBBBB") %>%
+      dyShading(from = "2017-3-1", to = "2017-3-31", color = "#BBBBBB") %>%
+      dyShading(from = "2017-5-1", to = "2017-5-31", color = "#BBBBBB") %>%
+      dyShading(from = "2017-7-1", to = "2017-7-31", color = "#BBBBBB") %>%
+      dyShading(from = "2017-9-1", to = "2017-9-30", color = "#BBBBBB") %>%
+      dyShading(from = "2017-11-1", to = "2017-11-30", color = "#BBBBBB") %>%
       dyEvent("2017-11-23", "Thanksgiving", labelLoc = "bottom") %>%
       dyEvent("2017-7-4", "4th of July", labelLoc = "bottom") %>%
       dyEvent("2017-12-25", "Christmas", labelLoc = "bottom") %>%
@@ -1976,7 +1976,7 @@ server <- function(input, output) {
                                         text = value)) +
         geom_tile(aes(fill = departuresMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#7bf7c5", high = "#004f2f") + 
+        scale_fill_gradient(limits = c(0, maxY), na.value = "#bfbfbf",low = "#66ff88", high = "#006616") + 
         labs(title = "Midway Departures by Airline(2017)", x = "Month", y = "Hour", color = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2085,7 +2085,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(low = "#66ff88", high = "#006616") + 
         labs(title = "O'hare Departures (2017)", x = "Month", y = "Hour", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2201,7 +2201,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
+        scale_fill_gradient(limits = c(0, maxY), low = "#66ff88", high = "#006616") + 
         labs(title = "Midway Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2602,7 +2602,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#85aef2", high = "#001a44") + 
+        scale_fill_gradient(limits = c(0, maxY),low = "#66ff88", high = "#006616") + 
         labs(title = "O'hare Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
       config(staticPlot = FALSE, displayModeBar = FALSE) %>%
       layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -2776,7 +2776,7 @@ server <- function(input, output) {
                                            text = value)) +
         geom_tile(aes(fill = allDeparturesMelt$value)) +
           themeTest +
-        scale_fill_gradient(limits = c(0, maxY), low = "#7bf7c5", high = "#004f2f") + 
+        scale_fill_gradient(limits = c(0, maxY),low = "#66ff88", high = "#006616") + 
         labs(title = "Midway Departures (2017)", x = "", y = "", fill = ""), tooltip = c("text")) %>%
         config(staticPlot = FALSE, displayModeBar = FALSE) %>%
         layout(yaxis = list(fixedrange = TRUE)) %>%
@@ -3478,12 +3478,12 @@ server <- function(input, output) {
         #dyOptions(axisLabelFontSize = 16) %>%
         dyLegend(hideOnMouseOut = FALSE, width = 350, show = "follow")%>% 
         dyRoller(rollPeriod = 1) %>%
-        dyShading(from = "2017-1-1", to = "2017-1-31", color = "#AFAFAF") %>%
-        dyShading(from = "2017-3-1", to = "2017-3-31", color = "#AFAFAF") %>%
-        dyShading(from = "2017-5-1", to = "2017-5-31", color = "#AFAFAF") %>%
-        dyShading(from = "2017-7-1", to = "2017-7-31", color = "#AFAFAF") %>%
-        dyShading(from = "2017-9-1", to = "2017-9-30", color = "#AFAFAF") %>%
-        dyShading(from = "2017-11-1", to = "2017-11-30", color = "#AFAFAF")
+        dyShading(from = "2017-1-1", to = "2017-1-31", color = "#BBBBBB") %>%
+        dyShading(from = "2017-3-1", to = "2017-3-31", color = "#BBBBBB") %>%
+        dyShading(from = "2017-5-1", to = "2017-5-31", color = "#BBBBBB") %>%
+        dyShading(from = "2017-7-1", to = "2017-7-31", color = "#BBBBBB") %>%
+        dyShading(from = "2017-9-1", to = "2017-9-30", color = "#BBBBBB") %>%
+        dyShading(from = "2017-11-1", to = "2017-11-30", color = "#BBBBBB")
       
     })
     
@@ -5046,6 +5046,8 @@ server <- function(input, output) {
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
       
+      #colnames(hourlyArrDep) <- c("Hour", "O\'Hare Arrivals",  "O\'Hare Departures")
+      
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
         pageLength = 10,
@@ -5129,6 +5131,8 @@ server <- function(input, output) {
       hourlyArrDep[is.na(hourlyArrDep)] = 0
       
       hourlyArrDep$Hour <- ordered(hourlyArrDep$Hour, levels = hourFormat[,])
+      
+      #colnames(hourlyArrDep) <- c("Hour", "Midway Arrivals", "Midway Departures")
       
       datatable(hourlyArrDep, options = list(
         searching = FALSE,
@@ -5356,25 +5360,26 @@ server <- function(input, output) {
     # Interesting Things
     output$InterestingThingsTable <- renderDT({
       interestingTable <- matrix(c(
-        "Thursday, November 23rd (2017-11-23)", "Thanksgiving", "description1",
-        "Tuesday, July 4th (2017-7-4)", "4th of July", "description2",
-        "Monday, December 25th (2017-12-25)", "Christmas", "description2",
-        "Friday, May 5th (2017-5-29)", "Memorial Day", "description2",
-        "Tuesday, February 14th (2017-2-14)", "Valentine's Day", "description2",
-        "Tuesday, August 8th (2017-8-28)", "UIC Fall Sart", "description2",
-        "Monday, January 16th (2017-1-16)", "UIC Spring Start", "description2",
-        "Friday, December 15th (2017-12-15)", "UIC Fall End", "description2",
-        "Friday, May 5th (2017-5-5)", "UIC Spring End", "description2",
-        "Monday, September 4th (2017-9-4)", "Labor Day", "description2"), 
+        "Thursday", "Nov 23rd (2017-11-23)", "Thanksgiving",# "description1",
+        "Tuesday", "Jul 04th (2017-7-4)", "4th of July",# "description2",
+        "Monday", "Dec 25th (2017-12-25)", "Christmas", #"description2",
+        "Friday", "May 05th (2017-5-29)", "Memorial Day",# "description2",
+        "Tuesday", "Feb 14th (2017-2-14)", "Valentine's Day",# "description2",
+        "Tuesday", "Aug 08th (2017-8-28)", "UIC Fall Sart", #"description2",
+        "Monday", "Jan 16th (2017-1-16)", "UIC Spring Start",# "description2",
+        "Friday", "Dec 15th (2017-12-15)", "UIC Fall End",# "description2",
+        "Friday", "May 05th (2017-5-5)", "UIC Spring End", #"description2",
+        "Monday", "Sep 04th (2017-9-4)", "Labor Day"),# "description2"), 
         ncol = 3, byrow = TRUE)
-      colnames(interestingTable) <- c("Date", "Event", "Description")
+      #colnames(interestingTable) <- c("Date", "Event", "Description")
+      colnames(interestingTable) <- c("Day of Week", "Date", "Event")
       
       interestingTable <- as.data.frame(interestingTable)
       
       datatable(interestingTable, options = list(
         searching = FALSE,
         pageLength = 10,
-        dom = "tp",
+        dom = "t",
         ordering = T,
         lengthChange = FALSE),
         rownames = FALSE
