@@ -170,12 +170,9 @@ ui <- fluidPage(
                                                          )),
                                                 tabPanel("", icon = icon("table", "fa-2x"), br(),
                                                          fluidRow(
-                                                           column(6,
+                                                           column(12,
                                                                   #tags$style(type = "text/css", "#pieChart1 {min-height:40vh !important;}"),
-                                                                  DTOutput("tmp49")),
-                                                           column(6,
-                                                                  #tags$style(type = "text/css", "#pieChart2 {min-height:40vh !important;}"),
-                                                                  DTOutput("tmp50"))
+                                                                  DTOutput("InterestingThingsTable"))
                                                          )))
                                             ),
                                             fluidRow(
